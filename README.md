@@ -14,3 +14,4 @@ para rodar: como cliente ./main como gerente ./main manager
 
 Diagrama de interação entre Cliente e Gerente:
 <iframe width="768" height="432" src="https://miro.com/app/embed/uXjVPohI4qM=/?pres=1&frameId=3458764547664582802&embedId=5908042219" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe> 
+alteração
