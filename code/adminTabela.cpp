@@ -1,3 +1,5 @@
+#include "global.h"
+
 string getLocalIpAddress(){
     //printf("... getting ip address...\n");
     string erro ="erro";
