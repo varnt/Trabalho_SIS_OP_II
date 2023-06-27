@@ -1,8 +1,8 @@
 #include "global.h" //arquivo de variaveis globais
 #include "monitoring_subservice.cpp"
 #include "discovery_subservice.cpp"
-#include "management_subservice"
-#include "interface_subsystem.cpp"
+#include "management_subservice.cpp"
+#include "interface_subservice.cpp"
 #include "adminTabela.cpp"
 
 
