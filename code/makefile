@@ -3,19 +3,14 @@
 # Nome do executável
 TARGET = GreenUP_SIS_OP_2
 
-# Arquivos de origem
-GCC_SOURCES = main.c 
 
 # Comandos do terminal
-GCC = gcc
+GCC = g++ -Wall -o
 RM = rm -f
 
 # Regra padrão
 all: $(TARGET)
-
-# Regra para compilar os arquivos main.c
-%.o: %.c
-	$(GCC) -c $< -o $@
+	$(GCC) $(TARGET) 
 
 
 # Regra para executar o programa
@@ -24,7 +19,7 @@ run: $(TARGET)
 
 # Regra para limpar os arquivos gerados
 clean:
-	$(RM) $(BISON_OUTPUT) $(FLEX_OUTPUT) $(GCC_OBJECTS) $(TARGET) $(BISON_HEADER) $(TARGET).tgz
+	$(RM)  $(TARGET).tgz
 
 tar:
 	tar -cvzf $(TARGET).tgz  'main.c' 'makefile'
