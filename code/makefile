@@ -10,7 +10,7 @@ RM = rm -f
 
 # Regra padrão
 all: $(TARGET)
-	$(GCC) $(TARGET) 
+	$(GCC) $(TARGET) main.cpp interface_subservice.cpp adminTabela.cpp management_subservice.cpp monitoring_subservice.cpp 
 
 
 # Regra para executar o programa
@@ -22,6 +22,6 @@ clean:
 	$(RM)  $(TARGET).tgz
 
 tar:
-	tar -cvzf $(TARGET).tgz  'main.c' 'makefile'
+	tar -cvzf $(TARGET).tgz  'main.cpp' 'makefile' 'interface_subservice.cpp' 'adminTabela.cpp' 'management_subservice.cpp' 'monitoring_subservice.cpp' 
 # Define as regras que não são nomes de arquivos
 .PHONY: all run clean tar
