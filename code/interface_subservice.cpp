@@ -1,9 +1,10 @@
-#include "global.h"
+#include "global.hpp"
 
-
+/*
 if (sessionMode == ADMIN)
 {
-    /* code */
+    // CODE HERE
 }
 
 else if(sessionMode == CLIENT)
+*/

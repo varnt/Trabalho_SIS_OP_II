@@ -1,6 +1,14 @@
-#include "global.h"
 
-string getLocalIpAddress(){
+#include "global.hpp"
+
+//Variaveis compartilhadas
+string localStatus; //pode ser bool
+string sessionMode; //ADMIN ou CLIENTE
+string modo; //MANDATO OU ELEICAO
+string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
+participante* tabelaParticipantes = nullptr; //inicio da lista
+
+ string getLocalIpAddress(){
     //printf("... getting ip address...\n");
     string erro ="erro";
     struct ifaddrs *ifaddr, *ifa;
@@ -8,7 +16,7 @@ string getLocalIpAddress(){
     char host[1025];
     if (getifaddrs(&ifaddr) == -1) {
         perror("getifaddrs");
-        //return 1;
+        return "not found";
     }
 
     for (ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
@@ -24,7 +32,7 @@ string getLocalIpAddress(){
 
             if (s != 0) {
                 printf("getnameinfo() failed: %s\n", gai_strerror(s));
-                //return 1;
+                return "not found";
             }
 
             //printf("%s: %s\n", ifa->ifa_name, host);
@@ -41,9 +49,9 @@ string getLocalIpAddress(){
     }
 
     freeifaddrs(ifaddr);
-   
+    return "IP Address not found";
 }
-
+ 
 string gethostname(){
     char hostname[256];
     int size=sizeof(hostname);
@@ -119,10 +127,8 @@ string getMacAddress() {
     }
 
     freeifaddrs(ifaddr);
-    
+    return "MacAddress not found";
 }
-
-
 
 // Função para adicionar um novo nó à lista encadeada
 void novoParticipante(participante*& tabelaParticipantes, std::string hostname, std::string ip_address, std::string mac_address, std::string status) {
@@ -163,6 +169,9 @@ void excluirParticipante(participante*& tabelaParticipantes, std::string mac_add
         participanteAnterior = participanteAtual;
         participanteAtual = participanteAtual->next;
     }
+    //cout<<"user not found\n";
+    
+    return;
 }
 // Função para imprimir a lista encadeada
 void printList(participante* tabelaParticipantes) {
@@ -187,3 +196,4 @@ bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,
     participanteAtual->status = status;
     return true;
 }
+
