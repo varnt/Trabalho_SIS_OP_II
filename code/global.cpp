@@ -57,7 +57,7 @@ string gethostname(){
     int size=sizeof(hostname);
     gethostname(hostname, size);
     std::string str(hostname);
-    if(hostname == ""){
+    if(hostname == NULL){
         return getLocalIpAddress();
     }
     return hostname;
