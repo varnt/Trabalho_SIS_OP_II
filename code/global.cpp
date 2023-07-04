@@ -169,7 +169,7 @@ void excluirParticipante(participante*& tabelaParticipantes, std::string mac_add
         participanteAnterior = participanteAtual;
         participanteAtual = participanteAtual->next;
     }
-    //cout<<"user not found\n";
+    cout<<"user not found\n";
     
     return;
 }
@@ -190,6 +190,7 @@ bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,
             participanteAtual = participanteAtual->next;
         }
         else{
+            cout<<"user not found\n";
             return false;//nao encontrei na lista
         }
     }

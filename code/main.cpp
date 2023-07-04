@@ -13,16 +13,20 @@ int main(int argc, char **argv)
     string localHostName = gethostname();
     cout<<"\n";
     novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
-    novoParticipante(tabelaParticipantes, "Adamastor", localIpAddress, "A", localStatus);
+    printList(tabelaParticipantes);
+    
+    //TESTES:
+    /*novoParticipante(tabelaParticipantes, "Adamastor", localIpAddress, "A", localStatus);
     novoParticipante(tabelaParticipantes, "Beatriz", localIpAddress, localMacAddress, localStatus);
     printList(tabelaParticipantes);
     cout<<"\n";
     excluirParticipante(tabelaParticipantes,"A");
     printList(tabelaParticipantes);
-    setStatusTabela(tabelaParticipantes,localIpAddress,"CEBOLINHA");
+    setStatusTabela(tabelaParticipantes,"Batatinha","CEBOLINHA");
     cout<<"\n";
     excluirParticipante(tabelaParticipantes,"A");
-    printList(tabelaParticipantes);
+    */
+    
     return 0;
 }
 /*int main(int argc, char **argv)
