@@ -12,7 +12,7 @@ class SocketAPI {
         int getSocketfd() { return this->socketfd; };
 
         //TODO: implement the subprocesses interfaces with the socket
-        int sendPacket(packet_struct* packet, char* destIP, uint16_t destPort);
+        int sendPacket(packet_struct* packet, string destIP, uint16_t destPort);
         int listenSocket(packet_struct* packet);
 
 

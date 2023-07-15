@@ -23,4 +23,8 @@ typedef struct __packet_struct {
     int message; //Mensagem (0 = SYN, 1 = SYN-ACK, 2 = ACK
 } packet_struct;
 
-packet_struct createPacket(uint sequence_number, uint16_t dest_port, uint16_t src_port, char* ip_dest, char* ip_src, char* hostname, char* mac_src, char* status,int message);
+/*
+Function to create a packet
+It must receive string parameters for non-int, but it will convert them to char* arrays internally
+*/
+packet_struct createPacket(uint sequence_number, uint16_t dest_port, uint16_t src_port, string ip_dest, string ip_src, string hostname, string mac_src, string status, int message);

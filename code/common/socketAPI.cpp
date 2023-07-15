@@ -64,7 +64,7 @@ int SocketAPI::listenSocket(packet_struct* packet) {
     return n;
 }
 
-int SocketAPI::sendPacket(packet_struct* packet, char* destIP, uint16_t destPort) {
+int SocketAPI::sendPacket(packet_struct* packet, string destIP, uint16_t destPort) {
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
     bzero(buffer, 1024);
@@ -73,7 +73,7 @@ int SocketAPI::sendPacket(packet_struct* packet, char* destIP, uint16_t destPort
     struct sockaddr_in destAddr;
     destAddr.sin_family = AF_INET;
     destAddr.sin_port = htons(destPort);
-    destAddr.sin_addr.s_addr = inet_addr(destIP);
+    destAddr.sin_addr.s_addr = inet_addr((char*)destIP.c_str());
     bzero(&(destAddr.sin_zero), 8);
 
     int n = sendto(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&destAddr, sizeof(destAddr));

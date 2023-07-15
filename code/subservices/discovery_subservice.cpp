@@ -1,6 +1,6 @@
 #include "discovery_subservice.hpp"
 
-DiscoverySubservice::DiscoverySubservice(participante* tabelaParticipantes, char* localHostname, char* localIP, char* localMAC, char* localStatus){
+DiscoverySubservice::DiscoverySubservice(participante* tabelaParticipantes, string localHostname, string localIP, string localMAC, string localStatus){
     this->tabelaParticipantes = tabelaParticipantes;
     this->socket = PORTA_DESCOBERTA;
     this->isActive = false;
@@ -49,8 +49,8 @@ int DiscoverySubservice::serverDiscoverySubservice() {
         
         //send an ACK packet to the new participant
         uint seqNum = 0;
-        packet_struct returnPacket = createPacket(seqNum,PORTA_DESCOBERTA, PORTA_DESCOBERTA, (char*)newIP.c_str(), this->localIP, this->localHostname, this->localMAC, this->localStatus, ACK);
-        n = serverSocket.sendPacket(returnPacket, (char*)newIP.c_str(), PORTA_DESCOBERTA);
+        packet_struct returnPacket = createPacket(seqNum,PORTA_DESCOBERTA, PORTA_DESCOBERTA, newIP, this->localIP, this->localHostname, this->localMAC, this->localStatus, ACK);
+        n = serverSocket.sendPacket(returnPacket, newIP, PORTA_DESCOBERTA);
 
         if (n < 0) {
             cout << "DiscoverySubservice>serverDiscoverySubservice> error on sending ACK" << endl;
@@ -77,21 +77,23 @@ int DiscoverySubservice::clientDiscoverySubservice() {
             return -1;
         }
 
-        //passive listening to the socket
-        n = clientSocket.listenSocket(&packet_received);
-        if (n < 0) {
-            cout << "DiscoverySubservice>clientDiscoverySubservice> error on listenning" << endl;
-            return -1;
-        }
+        int n = 0;
+        auto startTimer = chrono::steady_clock::now();
+        const int timeout = 5;
 
-        //include the new participant in the table
-        string newHostname = packet_received.hostname;
-        string newIP = packet_received.ip_src;
-        string newMAC = packet_received.mac_src;
-        string newStatus = packet_received.status;
-
-        if(estaNaTabela(this->tabelaParticipantes, newMAC) == false){
-            novoParticipante(this->tabelaParticipantes, newHostname, newIP, newMAC, newStatus);
+        //listen to the socket for 5 seconds or until receive an ACK
+        while ( n <= 0 || chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - startTimer).count() < timeout){
+            //passive listening to the socket waiting for ACK packet
+            n = clientSocket.listenSocket(&packet_received);
+            if (n < 0) {
+                cout << "DiscoverySubservice>clientDiscoverySubservice> error on listenning for ack" << endl;
+                return -1;
+            }
+            //behavior when receive an ACK
+            if (packet_received.message == ACK){
+                this->setNotActive();
+                return n;
+            }
         }
     }
     return 0;
