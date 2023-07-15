@@ -11,10 +11,27 @@ int main(int argc, char **argv)
     string localStatus = "awaken"; 
     string localIpAddress= getLocalIpAddress();
     string localHostName = gethostname();
+
     cout<<"\n";
     novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
     printList(tabelaParticipantes);
+
+   //Separar ações entre user e manager
+   if (sessionMode == "manager") {
+
+    //Abrir threads e chamar subserviços como manager
+
+   } else if (sessionMode == "client") {
+
+    //Abrir threads e chamar subserviços como user
+
+    } else {
+         cout << "userType error in main.cpp";
+
     
+    return 0;
+}
+
     //TESTES:
     /*novoParticipante(tabelaParticipantes, "Adamastor", localIpAddress, "A", localStatus);
     novoParticipante(tabelaParticipantes, "Beatriz", localIpAddress, localMacAddress, localStatus);
@@ -26,9 +43,11 @@ int main(int argc, char **argv)
     cout<<"\n";
     excluirParticipante(tabelaParticipantes,"A");
     */
-    
-    return 0;
-}
+
+
+
+
+
 /*int main(int argc, char **argv)
 {
     string hello = "Iniciando sistema Marco Polo de otimização de recursos na rede local";

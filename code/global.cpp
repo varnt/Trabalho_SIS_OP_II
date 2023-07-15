@@ -1,13 +1,6 @@
 
 #include "global.hpp"
 
-//Variaveis compartilhadas
-string localStatus; //pode ser bool
-string sessionMode; //ADMIN ou CLIENTE
-string modo; //MANDATO OU ELEICAO
-string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
-participante* tabelaParticipantes = nullptr; //inicio da lista
-
  string getLocalIpAddress(){
     //printf("... getting ip address...\n");
     string erro ="erro";
@@ -196,5 +189,16 @@ bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,
     }
     participanteAtual->status = status;
     return true;
+}
+
+bool estaNaTabela(participante*& tabelaParticipantes, std::string mac_address){
+    participante* participanteAtual = tabelaParticipantes;
+    while (participanteAtual != nullptr) {
+        if (participanteAtual->mac_address == mac_address) {
+            return true;
+        }
+        participanteAtual = participanteAtual->next;
+    }
+    return false;
 }
 
