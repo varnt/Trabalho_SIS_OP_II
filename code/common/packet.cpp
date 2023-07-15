@@ -1,4 +1,4 @@
-#include "packet.hpp
+#include "packet.hpp"
 
 // Função para criar um pacote
 packet_struct createPacket(uint sequence_number, uint16_t dest_port, uint16_t src_port, string ip_dest, string ip_src, string hostname, string mac_src, string status, int message) {
