@@ -1,6 +1,13 @@
 
 #include "global.hpp"
 
+//Variaveis compartilhadas
+string localStatus; //pode ser bool
+string sessionMode; //"client" ou "manager"
+string modo; //MANDATO OU ELEICAO
+string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
+participante* tabelaParticipantes = nullptr; //inicio da lista
+
  string getLocalIpAddress(){
     //printf("... getting ip address...\n");
     string erro ="erro";

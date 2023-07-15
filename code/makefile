@@ -17,6 +17,9 @@ $(TARGET): $(GCC_OBJECTS)
 # Regra para executar o programa
 run: $(TARGET)
 	./$(TARGET)
+
+run_manager: $(TARGET)
+	./$(TARGET) manager
 	
 
 #Regra para Compilar e executar:
