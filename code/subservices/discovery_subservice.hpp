@@ -6,21 +6,18 @@
 class DiscoverySubservice {
 public:
 
-    DiscoverySubservice(participante* tabelaParticipantes, char* localHostname, char* localIP, char* localMAC, char* localStatus){
-        this->tabelaParticipantes = tabelaParticipantes;
-        this->socket = PORTA_DESCOBERTA;
-    };
+    DiscoverySubservice(participante*& tabelaParticipantes, string localHostname, string localIP, string localMAC, string localStatus);
     ~DiscoverySubservice();
     void setActive();
     void setNotActive();
     int serverDiscoverySubservice();
     int clientDiscoverySubservice();
 private:
-    static participante* tabelaParticipantes;
+    static struct participante* tabelaParticipantes;
     int socket;
     bool isActive;
-    char* localHostname;
-    char* localIP;
-    char* localMAC;
-    char* localStatus;
+    string localHostname;
+    string localIP;
+    string localMAC;
+    string localStatus;
 };

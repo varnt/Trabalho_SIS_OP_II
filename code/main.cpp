@@ -1,8 +1,7 @@
-//#include "global.h" //arquivo de variaveis globais
-//#include "monitoring_subservice.cpp"
-//#include "discovery_subservice.cpp"
-//#include "management_subservice.cpp"
-//#include "interface_subservice.cpp"
+//#include "./subservices/management_subservice.hpp"
+//#include "./subservices/monitoring_subservice.hpp"
+//#include "./subservices/interface_subservice.hpp"
+#include "./subservices/discovery_subservice.hpp"
 #include "global.hpp"
 
 int main(int argc, char **argv)

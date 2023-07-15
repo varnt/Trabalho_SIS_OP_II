@@ -1,3 +1,4 @@
+#pragma once
 
 // Definição de estrutura de pacotes
 #define HOSTNAME_SIZE 256
