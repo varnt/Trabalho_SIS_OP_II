@@ -1,11 +1,12 @@
 #include "../global.hpp"
-#include "../handler/socketAPI.hpp"
+#include "../common/socketAPI.hpp"
+#include "../common/packet.hpp"
 
 //classe DiscoverySubservice
 class DiscoverySubservice {
 public:
 
-    DiscoverySubservice(participante* tabelaParticipantes){
+    DiscoverySubservice(participante* tabelaParticipantes, char* localHostname, char* localIP, char* localMAC, char* localStatus){
         this->tabelaParticipantes = tabelaParticipantes;
         this->socket = PORTA_DESCOBERTA;
     };
@@ -18,4 +19,8 @@ private:
     static participante* tabelaParticipantes;
     int socket;
     bool isActive;
+    char* localHostname;
+    char* localIP;
+    char* localMAC;
+    char* localStatus;
 };
