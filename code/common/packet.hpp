@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PACKET_HPP
+#define PACKET_HPP
 
 // Definição de estrutura de pacotes
 #define HOSTNAME_SIZE 256
@@ -29,3 +30,5 @@ Function to create a packet
 It must receive string parameters for non-int, but it will convert them to char* arrays internally
 */
 packet_struct createPacket(uint sequence_number, uint16_t dest_port, uint16_t src_port, string ip_dest, string ip_src, string hostname, string mac_src, string status, int message);
+
+#endif

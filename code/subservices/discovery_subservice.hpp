@@ -1,4 +1,7 @@
-#include "../global.hpp"
+#ifndef DISCOVERY_SUBSERVICE_HPP
+#define DISCOVERY_SUBSERVICE_HPP
+
+#include "../global.cpp"
 #include "../common/socketAPI.hpp"
 #include "../common/packet.hpp"
 
@@ -21,3 +24,5 @@ private:
     string localMAC;
     string localStatus;
 };
+
+#endif

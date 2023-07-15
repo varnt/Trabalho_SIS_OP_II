@@ -1,7 +1,7 @@
 //#include "./subservices/management_subservice.hpp"
 //#include "./subservices/monitoring_subservice.hpp"
 //#include "./subservices/interface_subservice.hpp"
-#include "./subservices/discovery_subservice.hpp"
+//#include "./subservices/discovery_subservice.hpp"
 #include "global.hpp"
 
 int main(int argc, char **argv)
@@ -9,11 +9,11 @@ int main(int argc, char **argv)
     if(argc >= 2 && strcmp(argv[1], "manager") == 0){
         cout << "Session Mode: Manager" << endl;
     }
-    else if (argc >= 0)
-    {
+    else {
         cout << "Função: Client" << endl;
+        string sessionMode = "client";
     }
-    string sessionMode = argv[1];
+    
     string localMacAddress = getMacAddress();
     string localStatus = "awaken"; 
     string localIpAddress= getLocalIpAddress();

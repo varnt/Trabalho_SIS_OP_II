@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GLOBAL_HPP
+#define GLOBAL_HPP
 
 #include <iostream>
 #include <vector>
@@ -56,3 +57,5 @@ void excluirParticipante(participante*& tabelaParticipantes, std::string mac_add
 bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,std::string status);
 
 bool estaNaTabela(participante*& tabelaParticipantes, std::string mac_address);
+
+#endif

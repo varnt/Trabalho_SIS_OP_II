@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SOCKETAPI_HPP
+#define SOCKETAPI_HPP
 
 #include "../global.hpp"
 #include "../common/packet.hpp"
@@ -28,3 +29,5 @@ class SocketAPI {
         int createSocket();
         
 };
+
+#endif
