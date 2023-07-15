@@ -1,6 +1,8 @@
 #ifndef PACKET_HPP
 #define PACKET_HPP
 
+#include "../global.hpp"
+
 // Definição de estrutura de pacotes
 #define HOSTNAME_SIZE 256
 #define IP_ADDR_SIZE 16

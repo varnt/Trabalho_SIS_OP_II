@@ -21,7 +21,7 @@ SocketAPI::~SocketAPI() {
 int SocketAPI::createSocket() {
 
     //Creates an endpoint for communication and return a file descriptor that refers to that endpoint.
-    if (this->socketfd = socket(AF_INET, SOCK_STREAM, 0) < 0) {
+    if ((this->socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         cerr << "SocketAPI>createSocket> error opening socket" << endl;
         return -1;
     }
@@ -45,6 +45,7 @@ int SocketAPI::createSocket() {
         cerr << "SocketAPI>createSocket> error binding socket" << endl;
         return -1;
     }
+    return 0;
 }
 
 int SocketAPI::listenSocket(packet_struct* packet) {
