@@ -1,26 +1,41 @@
 //#include "./subservices/management_subservice.hpp"
 //#include "./subservices/monitoring_subservice.hpp"
 //#include "./subservices/interface_subservice.hpp"
-//#include "./subservices/discovery_subservice.hpp"
+#include "./subservices/discovery_subservice.hpp"
 #include "global.hpp"
 
 int main(int argc, char **argv)
 { 
-    if(argc >= 2 && strcmp(argv[1], "manager") == 0){
-        cout << "Session Mode: Manager" << endl;
-    }
-    else {
-        cout << "Função: Client" << endl;
-        string sessionMode = "client";
-    }
+
     
     string localMacAddress = getMacAddress();
     string localStatus = "awaken"; 
     string localIpAddress= getLocalIpAddress();
     string localHostName = gethostname();
+    string sessionMode;
+    if(argc >= 2 && strcmp(argv[1], "manager") == 0){
+        cout << "Session Mode: Manager" << endl;
+        sessionMode = "manager";
+    }
+    else {
+        cout << "Função: Client" << endl;
+        sessionMode = "client";
+    }
+
+
+
+    participante* tabelaParticipantes = nullptr; //inicio da lista
+
     cout<<"\n";
     novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
     printList(tabelaParticipantes);
+
+    DiscoverySubservice discovery_obj(localHostName, localIpAddress, localMacAddress, localStatus);
+    if(sessionMode == "manager"){
+        discovery_obj.serverDiscoverySubservice(tabelaParticipantes);
+    }else if(sessionMode == "client"){
+        discovery_obj.clientDiscoverySubservice();
+    }
     
     //TESTES:
     /*novoParticipante(tabelaParticipantes, "Adamastor", localIpAddress, "A", localStatus);

@@ -3,16 +3,15 @@
 SocketAPI::SocketAPI(int port, string sessionMode) {
     this->port = port;
     this->sessionMode = sessionMode;
-    this->serverAddr = "";
     SocketAPI::createSocket();
 }
 
-SocketAPI::SocketAPI(int port, string serverAddr, string sessionMode) {
-    this->port = port;
-    this->sessionMode = sessionMode;
-    this->serverAddr = serverAddr;
-    SocketAPI::createSocket();
-}
+//SocketAPI::SocketAPI(int port, string serverAddr, string sessionMode) {
+//    this->port = port;
+//    this->sessionMode = sessionMode;
+//    this->serverAddr = serverAddr;
+//    SocketAPI::createSocket();
+//}
 
 SocketAPI::~SocketAPI() {
     close(this->socketfd);
@@ -44,11 +43,16 @@ int SocketAPI::createSocket() {
     if(bind(this->socketfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         cerr << "SocketAPI>createSocket> error binding socket" << endl;
         return -1;
+    }else{
+        cout << "SocketAPI>createSocket> socket binded" << endl;
     }
     return 0;
 }
 
 int SocketAPI::listenSocket(packet_struct* packet) {
+
+    cout << "SocketAPI>listenSocket> listening on port " << this->port << endl;
+
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
     bzero(buffer, 1024);
@@ -58,7 +62,7 @@ int SocketAPI::listenSocket(packet_struct* packet) {
 
     int n = recvfrom(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&clientAddr, &clientAddrLen);
     if (n < 0) {
-        cerr << "SocketAPI>receivePacket> error receiving packet" << endl;
+        cerr << "SocketAPI>receivePacket> error receiving packet > n = " << n << endl;
         return -1;
     }
     memcpy(packet, buffer, packetSize);

@@ -24,8 +24,6 @@ class SocketAPI {
         int port; //port number: must be one of the defined ones in global.hpp
         int socketfd; //socket file descriptor
         string sessionMode; //session mode: "client" or "manager", used to define the socket behavior
-        string serverAddr; //server address: used only in client mode, to define the server address
-
         int createSocket();
         
 };

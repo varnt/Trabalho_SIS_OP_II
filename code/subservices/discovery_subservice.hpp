@@ -1,7 +1,7 @@
 #ifndef DISCOVERY_SUBSERVICE_HPP
 #define DISCOVERY_SUBSERVICE_HPP
 
-#include "../global.cpp"
+#include "../global.hpp"
 #include "../common/socketAPI.hpp"
 #include "../common/packet.hpp"
 
@@ -9,14 +9,13 @@
 class DiscoverySubservice {
 public:
 
-    DiscoverySubservice(participante*& tabelaParticipantes, string localHostname, string localIP, string localMAC, string localStatus);
+    DiscoverySubservice(string localHostname, string localIP, string localMAC, string localStatus);
     ~DiscoverySubservice();
     void setActive();
     void setNotActive();
-    int serverDiscoverySubservice();
+    int serverDiscoverySubservice(participante*& tabelaParticipantes);
     int clientDiscoverySubservice();
 private:
-    static struct participante* tabelaParticipantes;
     int socket;
     bool isActive;
     string localHostname;

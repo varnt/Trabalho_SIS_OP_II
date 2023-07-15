@@ -37,8 +37,10 @@ using namespace std;
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
-// Definição da estrutura do nó da lista encadeada
 
+
+
+// Definição da estrutura do nó da lista encadeada
 struct participante {
     string hostname;
     string ip_address;
@@ -47,7 +49,12 @@ struct participante {
     participante* next;
 };
 
+extern string localStatus; //pode ser bool
+extern string sessionMode; //"client" ou "manager"
+extern string modo; //MANDATO OU ELEICAO
+extern string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
 extern participante* tabelaParticipantes;
+
 string getLocalIpAddress();
 string gethostname();
 string getMacAddress();

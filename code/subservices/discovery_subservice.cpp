@@ -1,9 +1,9 @@
 #include "discovery_subservice.hpp"
+#include "../global.hpp"
 
-DiscoverySubservice::DiscoverySubservice(participante*& tabelaParticipantes, string localHostname, string localIP, string localMAC, string localStatus){
-    this->tabelaParticipantes = tabelaParticipantes;
+DiscoverySubservice::DiscoverySubservice(string localHostname, string localIP, string localMAC, string localStatus){
     this->socket = PORTA_DESCOBERTA;
-    this->isActive = false;
+    this->isActive = true;
     this->localHostname = localHostname;
     this->localIP = localIP;
     this->localMAC = localMAC;
@@ -16,19 +16,30 @@ DiscoverySubservice::~DiscoverySubservice(){
 
 void DiscoverySubservice::setActive(){
     this->isActive = true;
+    cout << "DiscoverySubservice>setActive> DiscoverySubservice is active" << endl;
 };
 
 void DiscoverySubservice::setNotActive(){
     this->isActive = false;
+    cout << "DiscoverySubservice>setNotActive> DiscoverySubservice is not active" << endl;
 };
 
-int DiscoverySubservice::serverDiscoverySubservice() {
+int DiscoverySubservice::serverDiscoverySubservice(participante*& tabelaParticipantes) {
+
+    cout << "DiscoverySubservice>serverDiscoverySubservice> DiscoverySubservice is starting" << endl;
+
     //create a socket to listen to the discovery port
     SocketAPI serverSocket(PORTA_DESCOBERTA, "server");
+
+    cout << "DiscoverySubservice>serverDiscoverySubservice> DiscoverySubservice created a socketfd:" << serverSocket.getSocketfd() << endl;
+
     packet_struct packet_received;
 
     //loop to listen to the socket waiting for SYN packets
     this->setActive();
+
+    cout << "DiscoverySubservice>serverDiscoverySubservice> DiscoverySubservice is listenning" << endl;
+
     while(this->isActive){
         //passive listening to the socket
         int n = serverSocket.listenSocket(&packet_received);
@@ -43,8 +54,9 @@ int DiscoverySubservice::serverDiscoverySubservice() {
         string newMAC = packet_received.mac_src;
         string newStatus = packet_received.status;
 
-        if(estaNaTabela(this->tabelaParticipantes, newMAC) == false){
-            novoParticipante(this->tabelaParticipantes, newHostname, newIP, newMAC, newStatus);
+
+        if(estaNaTabela(tabelaParticipantes, newMAC) == false){
+            novoParticipante(tabelaParticipantes, newHostname, newIP, newMAC, newStatus);
         }
         
         //send an ACK packet to the new participant
