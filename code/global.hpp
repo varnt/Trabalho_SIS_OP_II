@@ -28,6 +28,9 @@
 #include <netdb.h>
 #include <chrono> //for timeouts
 
+#include <thread> //for threads
+#include <fcntl.h> //for non-blocking sockets
+
 
 using namespace std;
 

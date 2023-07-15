@@ -11,7 +11,7 @@ DiscoverySubservice::DiscoverySubservice(string localHostname, string localIP, s
 };
 
 DiscoverySubservice::~DiscoverySubservice(){
-    this->setNotActive();
+   // this->setNotActive();
 };
 
 void DiscoverySubservice::setActive(){
@@ -44,7 +44,7 @@ int DiscoverySubservice::serverDiscoverySubservice(participante*& tabelaParticip
         //passive listening to the socket
         int n = serverSocket.listenSocket(&packet_received);
         if (n < 0) {
-            cout << "DiscoverySubservice>serverDiscoverySubservice> error on listenning" << endl;
+            cout << "DiscoverySubservice>serverDiscoverySubservice> error on listenning = " << strerror(errno) << endl;
             return -1;
         }
 
@@ -85,7 +85,7 @@ int DiscoverySubservice::clientDiscoverySubservice() {
         //send a SYN packet to the broadcast address
         int n = clientSocket.sendPacket(&synPacket, GLOBAL_BROADCAST_ADD, PORTA_DESCOBERTA);
         if (n < 0) {
-            cout << "DiscoverySubservice>clientDiscoverySubservice> error on sending SYN" << endl;
+            cout << "DiscoverySubservice>clientDiscoverySubservice> error on sending SYN = " << strerror(errno) << endl;
             return -1;
         }
 
@@ -98,7 +98,7 @@ int DiscoverySubservice::clientDiscoverySubservice() {
             //passive listening to the socket waiting for ACK packet
             n = clientSocket.listenSocket(&ackPacket);
             if (n < 0) {
-                cout << "DiscoverySubservice>clientDiscoverySubservice> error on listenning for ack" << endl;
+                cout << "DiscoverySubservice>clientDiscoverySubservice> error on listenning for ACK = "<< strerror(errno) << endl;
                 return -1;
             }
             //behavior when receive an ACK

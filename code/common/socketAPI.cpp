@@ -21,7 +21,7 @@ int SocketAPI::createSocket() {
 
     //Creates an endpoint for communication and return a file descriptor that refers to that endpoint.
     if ((this->socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        cerr << "SocketAPI>createSocket> error opening socket" << endl;
+        cerr << "SocketAPI>createSocket> error opening socket" << strerror(errno) << endl;
         return -1;
     }
 
@@ -41,7 +41,7 @@ int SocketAPI::createSocket() {
     
     //Associates a local address with a socket and catch errors.
     if(bind(this->socketfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        cerr << "SocketAPI>createSocket> error binding socket" << endl;
+        cerr << "SocketAPI>createSocket> error binding socket = " << strerror(errno) << endl;
         return -1;
     }else{
         cout << "SocketAPI>createSocket> socket binded" << endl;
@@ -51,7 +51,7 @@ int SocketAPI::createSocket() {
 
 int SocketAPI::listenSocket(packet_struct* packet) {
 
-    cout << "SocketAPI>listenSocket> listening on port " << this->port << endl;
+    cout << "SocketAPI>listenSocket> listening on port = " << this->port << endl;
 
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
@@ -62,7 +62,7 @@ int SocketAPI::listenSocket(packet_struct* packet) {
 
     int n = recvfrom(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&clientAddr, &clientAddrLen);
     if (n < 0) {
-        cerr << "SocketAPI>receivePacket> error receiving packet > n = " << n << endl;
+        cerr << "SocketAPI>receivePacket> error receiving packet  = " << strerror(errno) << endl;
         return -1;
     }
     memcpy(packet, buffer, packetSize);
@@ -83,7 +83,7 @@ int SocketAPI::sendPacket(packet_struct* packet, string destIP, uint16_t destPor
 
     int n = sendto(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&destAddr, sizeof(destAddr));
     if (n < 0) {
-        cerr << "SocketAPI>sendPacket> error sending packet" << endl;
+        cerr << "SocketAPI>sendPacket> error sending packet = " << strerror(errno) << endl;
         return -1;
     }
     return n;
