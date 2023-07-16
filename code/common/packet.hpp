@@ -7,7 +7,7 @@
 #define HOSTNAME_SIZE 256
 #define IP_ADDR_SIZE 16
 #define MAC_SIZE 18
-#define STATUS_SIZE 1
+#define STATUS_SIZE 16
 
 //Definição de códigos de mensagem
 #define SYN 0

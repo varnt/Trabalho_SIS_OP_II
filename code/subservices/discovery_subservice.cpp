@@ -47,11 +47,22 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
     while (this->isActive)
     {
         //passive listening to the socket
-        int n = serverSocket.listenSocket(&packet_received);
-        if (n < 0)
+        int n = 0; // num of bytes received
+        while (n <= 0)
         {
-            cout << "DiscoverySubservice>serverDiscoverySubservice> error on listenning = " << strerror(errno) << endl;
-            return -1;
+            n = serverSocket.listenSocket(&packet_received);
+            if (n < 0)
+            {
+                if (errno == EAGAIN || errno == EWOULDBLOCK)
+                {
+                    n = 0;
+                }
+                else
+                {
+                    cout << "DiscoverySubservice>serverDiscoverySubservice> error on listening socket" << endl;
+                    return -1;
+                }
+            }
         }
 
         //include the new participant in the table
@@ -86,16 +97,16 @@ int DiscoverySubservice::clientDiscoverySubservice()
     SocketAPI clientSocket(PORTA_DESCOBERTA, "client");
     cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice created a socketfd:" << clientSocket.getSocketfd() << endl;
     uint seqNum = 0;
-    packet_struct* synPacket = createPacket(seqNum, PORTA_DESCOBERTA, PORTA_DESCOBERTA, GLOBAL_BROADCAST_ADD, this->localIP, this->localHostname, this->localMAC, this->localStatus, SYN);
+    packet_struct synPacket = createPacket(seqNum, PORTA_DESCOBERTA, PORTA_DESCOBERTA, GLOBAL_BROADCAST_ADD, this->localIP, this->localHostname, this->localMAC, this->localStatus, SYN);
     cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice created a SYN packet" << endl;
     packet_struct ackPacket;
 
     //loop to send SYN packets to the broadcast address until receive an ACK
     this->setActive();
-    cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice is sending SYN" << endl;
     while (this->isActive)
     {
         //send a SYN packet to the broadcast address
+        cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice is sending SYN" << endl;
         int n = clientSocket.sendPacket(&synPacket, GLOBAL_BROADCAST_ADD, PORTA_DESCOBERTA);
         if (n < 0)
         {
@@ -104,24 +115,29 @@ int DiscoverySubservice::clientDiscoverySubservice()
         }
 
         n = 0;
-        auto startTimer = chrono::steady_clock::now();
-        const int timeout = 5;
-
         //listen to the socket for 5 seconds or until receive an ACK
-        while (n <= 0 || chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - startTimer).count() < timeout)
+        while (n <= 0)
         {
             //passive listening to the socket waiting for ACK packet
+
             n = clientSocket.listenSocket(&ackPacket);
             if (n < 0)
             {
-                cout << "DiscoverySubservice>clientDiscoverySubservice> error on listenning for ACK = " << strerror(errno) << endl;
-                return -1;
+                if (errno == EAGAIN || errno == EWOULDBLOCK)
+                {
+                    n = 1;
+                }
+                else
+                {
+                    cerr << "DiscoverySubservice>clientDiscoverySubservice> error on listenning for ACK = " << strerror(errno) << endl;
+                    return -1;
+                }
             }
             //behavior when receive an ACK
             if (ackPacket.message == ACK)
             {
                 this->setNotActive();
-                return n;
+                this->isActive = false;
             }
         }
     }
