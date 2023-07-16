@@ -29,7 +29,6 @@ int SocketAPI::createSocket()
         return -1;
     }
 
-
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
@@ -37,13 +36,13 @@ int SocketAPI::createSocket()
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     bzero(&(this->serverAddr.sin_zero), 8);
     if (bind(this->socketfd, (struct sockaddr *)&serverAddr, sizeof(struct sockaddr)) < 0)
-     {
-             cerr << "SocketAPI>createSocket> error binding socket = " << strerror(errno) << endl;
-             return -1;
+    {
+        cerr << "SocketAPI>createSocket> error binding socket = " << strerror(errno) << endl;
+        return -1;
     }
     else
     {
-            cout << "SocketAPI>createSocket> socket binded" << endl;
+        cout << "SocketAPI>createSocket> socket binded" << endl;
     }
     /*
     struct sockaddr_in {
@@ -59,8 +58,15 @@ int SocketAPI::createSocket()
 int SocketAPI::listenSocket(packet_struct *packet)
 {
     //Associates a local address with a socket and catch errors.
-//  if (bind(socket_file_descriptor, (struct sockaddr *)&server_address, sizeof(struct sockaddr)) < 0)
     cout << "SocketAPI>listenSocket> listening on port = " << this->port << endl;
+
+    struct timeval timeout = {.tv_sec = 5};
+    int x = setsockopt(this->socketfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
+    if (x < 0)
+    {
+        cerr << "SocketAPI>listenSocket> error setting SO_RCVTIMEO = " << strerror(errno) << endl;
+        return -1;
+    }
 
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
@@ -72,8 +78,14 @@ int SocketAPI::listenSocket(packet_struct *packet)
     int n = recvfrom(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&clientAddr, &clientAddrLen);
     if (n < 0)
     {
-        cerr << "SocketAPI>receivePacket> error receiving packet  = " << strerror(errno) << endl;
-        return -1;
+        if(errno == EAGAIN || errno == EWOULDBLOCK) {
+            cout << "SocketAPI>listenSocket> timeout" << endl;
+            return n;
+        }
+        else{
+            cerr << "SocketAPI>receivePacket> error receiving packet  = " << strerror(errno) << endl;
+            return -1;
+        } 
     }
     memcpy(packet, buffer, packetSize);
     return n;
@@ -81,7 +93,6 @@ int SocketAPI::listenSocket(packet_struct *packet)
 
 int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPort)
 {
-
 
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
@@ -93,15 +104,17 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
 
     bzero(&(destAddr.sin_zero), 8);
     int broadcastEnable = 1;
-    if (setsockopt(this->socketfd, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable)) == -1) {
+    if (setsockopt(this->socketfd, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable)) == -1)
+    {
         cerr << "SocketAPI>enableBroadcast> error setting SO_BROADCAST option: " << strerror(errno) << endl;
         return -1;
-}
+    }
     int n = sendto(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&destAddr, sizeof(destAddr));
-    if (n == -1 && errno == EACCES) {
-    cerr << "SocketAPI>sendPacket> permission denied error: user does not have necessary permissions" << endl;
-    return -1;
-}
+    if (n == -1 && errno == EACCES)
+    {
+        cerr << "SocketAPI>sendPacket> permission denied error: user does not have necessary permissions" << endl;
+        return -1;
+    }
     if (n < 0)
     {
         cerr << "SocketAPI>sendPacket> error sending packet = " << strerror(errno) << endl;

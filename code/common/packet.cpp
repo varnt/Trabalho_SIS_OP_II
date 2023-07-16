@@ -11,8 +11,6 @@ packet_struct createPacket(uint sequence_number, uint16_t dest_port, uint16_t sr
     strcpy(packet.hostname, (char*)hostname.c_str());
     strcpy(packet.mac_src, (char*)mac_src.c_str());
     strcpy(packet.status, (char*)status.c_str());
-    cout << "status: " << packet.status << endl;
-    cout << "status size: " << sizeof(packet.status) << endl;
     packet.message = message;
     return packet;
 }
