@@ -15,22 +15,53 @@
 #define ACK 2
 
 // Definição de estrutura de pacotes
-typedef struct __packet_struct {
-    uint sequence_number; //Número de sequência
-    uint16_t dest_port; //Porta de destino
-    uint16_t src_port; //Porta de origem
-    char ip_dest[IP_ADDR_SIZE]; //IP de destino
-    char ip_src[IP_ADDR_SIZE]; //IP de origem
-    char hostname[HOSTNAME_SIZE]; //Hostname de origem
-    char mac_src[MAC_SIZE]; //MAC de destino
-    char status[STATUS_SIZE]; //Status
-    int message; //Mensagem (0 = SYN, 1 = SYN-ACK, 2 = ACK
-} packet_struct;
 
-/*
-Function to create a packet
-It must receive string parameters for non-int, but it will convert them to char* arrays internally
-*/
-packet_struct createPacket(uint sequence_number, uint16_t dest_port, uint16_t src_port, string ip_dest, string ip_src, string hostname, string mac_src, string status, int message);
+class Packet{
+    public:
+        Packet(uint sequence_number, uint16_t dest_port, uint16_t src_port, string ip_dest, string ip_src, string hostname, string mac_src, string status, int message);
+        ~Packet();
+        uint getSequenceNumber();
+        uint16_t getDestPort();
+        uint16_t getSrcPort();
+        string getIpDest();
+        string getIpSrc();
+        string getHostname();
+        string getMacSrc();
+        string getStatus();
+        int getMessage();
 
+
+    private:
+        uint sequence_number; //Número de sequência
+        uint16_t dest_port; //Porta de destino
+        uint16_t src_port; //Porta de origem
+        char ip_dest[IP_ADDR_SIZE]; //IP de destino
+        char ip_src[IP_ADDR_SIZE]; //IP de origem
+        char hostname[HOSTNAME_SIZE]; //Hostname de origem
+        char mac_src[MAC_SIZE]; //MAC de destino
+        char status[STATUS_SIZE]; //Status
+        int message; //Mensagem (0 = SYN, 1 = SYN-ACK, 2 = ACK
+}
 #endif
+
+
+
+
+// typedef struct __packet_struct {
+//     uint sequence_number; //Número de sequência
+//     uint16_t dest_port; //Porta de destino
+//     uint16_t src_port; //Porta de origem
+//     char ip_dest[IP_ADDR_SIZE]; //IP de destino
+//     char ip_src[IP_ADDR_SIZE]; //IP de origem
+//     char hostname[HOSTNAME_SIZE]; //Hostname de origem
+//     char mac_src[MAC_SIZE]; //MAC de destino
+//     char status[STATUS_SIZE]; //Status
+//     int message; //Mensagem (0 = SYN, 1 = SYN-ACK, 2 = ACK
+// } packet_struct;
+
+// /*
+// Function to create a packet
+// It must receive string parameters for non-int, but it will convert them to char* arrays internally
+// */
+// packet_struct* createPacket(uint sequence_number, uint16_t dest_port, uint16_t src_port, string ip_dest, string ip_src, string hostname, string mac_src, string status, int message);
+
