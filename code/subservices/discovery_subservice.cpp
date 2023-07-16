@@ -111,6 +111,7 @@ int DiscoverySubservice::clientDiscoverySubservice()
         while (n <= 0 || chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - startTimer).count() < timeout)
         {
             //passive listening to the socket waiting for ACK packet
+            
             n = clientSocket.listenSocket(&ackPacket);
             if (n < 0)
             {
