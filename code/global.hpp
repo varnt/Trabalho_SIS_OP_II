@@ -1,3 +1,6 @@
+#ifndef GLOBAL_HPP
+#define GLOBAL_HPP
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -23,7 +26,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <chrono> //for timeouts
 
+#include <thread> //for threads
 
 using namespace std;
 
@@ -33,8 +38,10 @@ using namespace std;
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
-// Definição da estrutura do nó da lista encadeada
 
+
+
+// Definição da estrutura do nó da lista encadeada
 struct participante {
     string hostname;
     string ip_address;
@@ -43,7 +50,12 @@ struct participante {
     participante* next;
 };
 
+extern string localStatus; //pode ser bool
+extern string sessionMode; //"client" ou "manager"
+extern string modo; //MANDATO OU ELEICAO
+extern string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
 extern participante* tabelaParticipantes;
+
 string getLocalIpAddress();
 string gethostname();
 string getMacAddress();
@@ -51,3 +63,7 @@ void novoParticipante(participante*& tabelaParticipantes, string hostname, strin
 void printList(participante* tabelaParticipantes);
 void excluirParticipante(participante*& tabelaParticipantes, std::string mac_address);
 bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,std::string status);
+
+bool estaNaTabela(participante*& tabelaParticipantes, std::string mac_address);
+
+#endif
