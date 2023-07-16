@@ -79,6 +79,7 @@ int SocketAPI::listenSocket(packet_struct *packet)
 
 int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPort)
 {
+
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
     bzero(buffer, 1024);
@@ -91,6 +92,10 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     bzero(&(destAddr.sin_zero), 8);
 
     int n = sendto(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&destAddr, sizeof(destAddr));
+    if (n == -1 && errno == EACCES) {
+    cerr << "SocketAPI>sendPacket> permission denied error: user does not have necessary permissions" << endl;
+    return -1;
+}
     if (n < 0)
     {
         cerr << "SocketAPI>sendPacket> error sending packet = " << strerror(errno) << endl;
