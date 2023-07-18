@@ -69,6 +69,10 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
                 string newIP = packet_received.ip_src;
                 string newMAC = packet_received.mac_src;
                 string newStatus = packet_received.status;
+                uint16_t srcPort = packet_received.src_port;
+
+                cout << "srcPort = " << srcPort << endl;
+
                 if (estaNaTabela(tabelaParticipantes, newMAC) == false)
                 {
                     // include the new participant in the table
@@ -78,8 +82,8 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
 
                 // send an ACK packet to the new participant
                 uint seqNum = 0;
-                packet_struct returnPacket = createPacket(seqNum, PORTA_DESCOBERTA, PORTA_DESCOBERTA, newIP, this->localIP, this->localHostname, this->localMAC, this->localStatus, ACK);
-                n = serverSocket.sendPacket(&returnPacket, newIP, PORTA_DESCOBERTA);
+                packet_struct returnPacket = createPacket(seqNum, srcPort, PORTA_DESCOBERTA, newIP, this->localIP, this->localHostname, this->localMAC, this->localStatus, ACK);
+                n = serverSocket.sendPacket(&returnPacket, newIP, srcPort);
 
                 if (n < 0)
                 {
