@@ -192,7 +192,7 @@ void printList(participante *tabelaParticipantes)
     participante *currparticipante = tabelaParticipantes;
     while (currparticipante != nullptr)
     {
-        std::cout << "Hostname: " << currparticipante->hostname << ", IP: " << currparticipante->ip_address << ", MAC Address: " << currparticipante->mac_address << ", Status: " << currparticipante->status << std::endl;
+        std::cout << ">> Hostname: " << currparticipante->hostname << ", IP: " << currparticipante->ip_address << ", MAC Address: " << currparticipante->mac_address << ", Status: " << currparticipante->status << std::endl;
         currparticipante = currparticipante->next;
     }
 }

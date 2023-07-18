@@ -1,6 +1,6 @@
-//#include "./subservices/management_subservice.hpp"
-//#include "./subservices/monitoring_subservice.hpp"
-//#include "./subservices/interface_subservice.hpp"
+// #include "./subservices/management_subservice.hpp"
+// #include "./subservices/monitoring_subservice.hpp"
+#include "./subservices/interface_subservice.hpp"
 #include "./subservices/discovery_subservice.hpp"
 #include "global.hpp"
 
@@ -23,11 +23,16 @@ int main(int argc, char **argv)
         sessionMode = "client";
     }
 
-    participante *tabelaParticipantes = nullptr; //inicio da lista
+    participante *tabelaParticipantes = nullptr; // inicio da lista
 
     cout << "\n";
     novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
-    printList(tabelaParticipantes);
+
+    InterfaceSubservice interface(tabelaParticipantes);
+    interface.setActive();
+    interface.updateServerScreen();
+
+    // printList(tabelaParticipantes);
 
     DiscoverySubservice discovery_obj(localHostName, localIpAddress, localMacAddress, localStatus);
     if (sessionMode == "manager")
@@ -39,7 +44,7 @@ int main(int argc, char **argv)
         discovery_obj.clientDiscoverySubservice();
     }
 
-    //TESTES:
+    // TESTES:
     /*novoParticipante(tabelaParticipantes, "Adamastor", localIpAddress, "A", localStatus);
     novoParticipante(tabelaParticipantes, "Beatriz", localIpAddress, localMacAddress, localStatus);
     printList(tabelaParticipantes);
@@ -58,15 +63,15 @@ int main(int argc, char **argv)
     string hello = "Iniciando sistema Marco Polo de otimização de recursos na rede local";
     //[parametros da maquina local
     string localMacAddress = getMacAddress();
-    localStatus = "awaken"; 
+    localStatus = "awaken";
     string localIpAddress= getLocalIpAddress();
     string localHostName = gethostname();
 
     //novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
     //novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
     // Impressão da lista encadeada
-    
-    
+
+
     //definir variaveis globais do semaforo
 
     //]
@@ -93,10 +98,10 @@ int main(int argc, char **argv)
 
     //thread( monitoring_subservice,)
 
-   
-    
-    
-   
+
+
+
+
     return 0;
 }
 
