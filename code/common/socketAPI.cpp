@@ -97,6 +97,9 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     int packetSize = sizeof(packet_struct);
     char buffer[1024];
     bzero(buffer, 1024);
+
+    memcpy(buffer, packet, packetSize);
+
     struct sockaddr_in destAddr;
     destAddr.sin_family = AF_INET;
     destAddr.sin_port = htons(destPort);
