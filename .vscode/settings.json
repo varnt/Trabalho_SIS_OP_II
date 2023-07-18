@@ -2,7 +2,8 @@
   "files.associations": {
     "iostream": "cpp",
     "string": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "random": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled",
   "C_Cpp_Runner.msvcBatchPath": "",
