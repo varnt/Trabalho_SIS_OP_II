@@ -32,10 +32,9 @@ int main(int argc, char **argv)
 
     extern bool tabelaParticipantesUpdate;
 
-    InterfaceSubservice interface(tabelaParticipantes, &tabelaParticipantesUpdate); // thread
-    DiscoverySubservice discovery_obj(localHostName, localIpAddress, localMacAddress, localStatus);
+    InterfaceSubservice interface(tabelaParticipantes, &tabelaParticipantesUpdate);
+    DiscoverySubservice discovery_obj(&tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus);
     MonitoringSubservice monitoring_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus, sessionMode);
-    // thread
 
     if (sessionMode == "manager")
     {
@@ -45,13 +44,6 @@ int main(int argc, char **argv)
                        { discovery_obj.serverDiscoverySubservice(tabelaParticipantes); });
         thread mon_thr([&monitoring_obj]()
                        { monitoring_obj.serverMonitoringSubservice(); });
-
-        while (true)
-        {
-            std::this_thread::sleep_for(std::chrono::seconds(7));
-            novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
-            tabelaParticipantesUpdate = false;
-        }
 
         int_thr.join();
         dsc_thr.join();

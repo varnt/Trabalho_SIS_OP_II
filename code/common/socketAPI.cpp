@@ -42,7 +42,7 @@ int SocketAPI::createSocket()
     }
     else
     {
-        cout << "SocketAPI>createSocket> socket binded" << endl;
+        //cout << "SocketAPI>createSocket> socket binded" << endl;
     }
     /*
     struct sockaddr_in {
@@ -103,7 +103,7 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     char buffer[1024];
     bzero(buffer, 1024);
 
-    cout << "SocketAPI>sendPacket> sending mensage = " << packet->message << endl;
+    //cout << "SocketAPI>sendPacket> sending mensage = " << packet->message << endl;
 
     memcpy(buffer, packet, packetSize);
 
@@ -112,7 +112,7 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     destAddr.sin_port = htons(destPort);
     destAddr.sin_addr.s_addr = inet_addr((char *)destIP.c_str());
 
-    cout << "SocketAPI>sendPacket> sending to port = " << htons(destAddr.sin_port) << endl;
+    //cout << "SocketAPI>sendPacket> sending to port = " << htons(destAddr.sin_port) << endl;
 
     bzero(&(destAddr.sin_zero), 8);
     int broadcastEnable = 1;

@@ -9,8 +9,8 @@
 class DiscoverySubservice {
 public:
 
-    DiscoverySubservice(string localHostname, string localIP, string localMAC, string localStatus);
-    ~DiscoverySubservice();
+    DiscoverySubservice(bool *tabelaParticipantesUpdate, string localHostname, string localIP, string localMAC, string localStatus);
+    ~DiscoverySubservice(); 
     void setActive();
     void setNotActive();
     int serverDiscoverySubservice(participante*& tabelaParticipantes);
@@ -18,6 +18,7 @@ public:
 private:
     int socket;
     bool isActive;
+    bool *tabelaEstaAtualizada;
     string localHostname;
     string localIP;
     string localMAC;

@@ -115,6 +115,8 @@ int InterfaceSubservice::updateClientScreen()
         }
         else if (userCommand == "quit")
         {
+            system("clear");
+            cout << "Exiting..." << endl;
             return 0;
         }
     }
