@@ -53,11 +53,6 @@ struct participante {
     participante* next;
 };
 
-// extern string localStatus; //pode ser bool
-// extern string sessionMode; //"client" ou "manager"
-// extern string modo; //MANDATO OU ELEICAO
-// extern string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
-// extern participante* tabelaParticipantes;
 string getLocalIpAddress();
 string gethostname();
 string getMacAddress();

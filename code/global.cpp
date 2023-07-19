@@ -6,7 +6,6 @@ bool tabelaParticipantesUpdate = false;
 bool* tabelaParticipantesUpdate_ptr = &tabelaParticipantesUpdate;
 string getLocalIpAddress()
 {
-    //printf("... getting ip address...\n");
     string erro = "erro";
     struct ifaddrs *ifaddr, *ifa;
     int family, s, n;
@@ -100,7 +99,6 @@ string getMacAddress()
                 //return 1;
             }
 
-            //printf("%s: %s\n", ifa->ifa_name, host);
             std::string name(ifa->ifa_name);
             if ("lo" != name)
             {

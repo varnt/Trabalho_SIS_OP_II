@@ -13,37 +13,28 @@ DiscoverySubservice::DiscoverySubservice(bool *tabelaParticipantesUpdate, string
 };
 
 DiscoverySubservice::~DiscoverySubservice(){
-    // this->setNotActive();
 };
 
 void DiscoverySubservice::setActive()
 {
     this->isActive = true;
-    cout << "DiscoverySubservice>setActive> DiscoverySubservice is active" << endl;
 };
 
 void DiscoverySubservice::setNotActive()
 {
     this->isActive = false;
-    cout << "DiscoverySubservice>setNotActive> DiscoverySubservice is not active" << endl;
 };
 
 int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticipantes)
 {
 
-    //cout << "DiscoverySubservice>serverDiscoverySubservice> DiscoverySubservice is starting" << endl;
-
     // create a socket to listen to the discovery port
     SocketAPI serverSocket(PORTA_DESCOBERTA, "server");
-
-    //cout << "DiscoverySubservice>serverDiscoverySubservice> DiscoverySubservice created a socketfd:" << serverSocket.getSocketfd() << endl;
 
     packet_struct packet_received;
 
     // loop to listen to the socket waiting for SYN packets
     this->setActive();
-
-    //cout << "DiscoverySubservice>serverDiscoverySubservice> DiscoverySubservice is listenning" << endl;
 
     while (this->isActive)
     {
@@ -60,7 +51,7 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
                 }
                 else
                 {
-                    cout << "DiscoverySubservice>serverDiscoverySubservice> error on listening socket" << endl;
+                    cerr << "DiscoverySubservice>serverDiscoverySubservice> error on listening socket" << endl;
                     return -1;
                 }
             }
@@ -72,14 +63,11 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
                 string newStatus = packet_received.status;
                 uint16_t srcPort = packet_received.src_port;
 
-                //cout << "srcPort = " << srcPort << endl;
-
                 if (estaNaTabela(tabelaParticipantes, newMAC) == false)
                 {
                     // include the new participant in the table
                     novoParticipante(tabelaParticipantes, newHostname, newIP, newMAC, newStatus);
                     *tabelaEstaAtualizada = false;
-                    //cout << "DiscoverySubservice>serverDiscoverySubservice> packet ip_src = " << packet_received.ip_src << endl;
                 }
 
                 // send an ACK packet to the new participant
@@ -89,7 +77,7 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
 
                 if (n < 0)
                 {
-                    cout << "DiscoverySubservice>serverDiscoverySubservice> error on sending ACK" << endl;
+                    cerr << "DiscoverySubservice>serverDiscoverySubservice> error on sending ACK" << endl;
                 }
             }
         }
@@ -101,13 +89,10 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
 
 int DiscoverySubservice::clientDiscoverySubservice()
 {
-    //cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice is starting" << endl;
     // create socket to broadcast
     SocketAPI clientSocket(PORTA_DESCOBERTA_CLIENTE, "client");
-    //cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice created a socketfd:" << clientSocket.getSocketfd() << endl;
     uint seqNum = 0;
     packet_struct synPacket = createPacket(seqNum, PORTA_DESCOBERTA, PORTA_DESCOBERTA_CLIENTE, GLOBAL_BROADCAST_ADD, this->localIP, this->localHostname, this->localMAC, this->localStatus, SYN);
-    //cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice created a SYN packet" << endl;
     packet_struct ackPacket;
 
     // loop to send SYN packets to the broadcast address until receive an ACK
@@ -115,11 +100,10 @@ int DiscoverySubservice::clientDiscoverySubservice()
     while (this->isActive)
     {
         // send a SYN packet to the broadcast address
-        //cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice is sending SYN" << endl;
         int n = clientSocket.sendPacket(&synPacket, GLOBAL_BROADCAST_ADD, PORTA_DESCOBERTA);
         if (n < 0)
         {
-            cout << "DiscoverySubservice>clientDiscoverySubservice> error on sending SYN = " << strerror(errno) << endl;
+            cerr << "DiscoverySubservice>clientDiscoverySubservice> error on sending SYN = " << strerror(errno) << endl;
             return -1;
         }
 
@@ -129,7 +113,6 @@ int DiscoverySubservice::clientDiscoverySubservice()
         {
             // passive listening to the socket waiting for ACK packet
 
-            //cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice is listenning" << endl;
             n = clientSocket.listenSocket(&ackPacket);
             if (n < 0)
             {

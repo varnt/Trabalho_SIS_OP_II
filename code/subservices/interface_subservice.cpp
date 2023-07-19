@@ -51,8 +51,7 @@ int InterfaceSubservice::updateServerScreen()
     this->enablePrinting = true;
     *tabelaEstaAtualizada = false;
 
-    cout << "InterfaceSubservice>updateServerScreen> is updated = " << *tabelaEstaAtualizada << endl;
-      thread printTable_thr([&]()
+    thread printTable_thr([&]()
                           {
                               InterfaceSubservice::printTable(*tabelaEstaAtualizada, this->tabelaParticipantes); // thread
                           });
@@ -68,21 +67,21 @@ int InterfaceSubservice::updateServerScreen()
         getline(cin, userCommand);
         this->enablePrinting = false;
         getline(cin, userCommand);
-        if (userCommand == "help")
+        if (userCommand == "HELP")
         {
             this->enablePrinting = false;
             system("clear");
-            cout << "  -  help - show this help" << endl;
-            cout << "  -  quit - exit the program" << endl;
+            cout << "  -  HELP - show this help" << endl;
+            cout << "  -  EXIT - exit the program" << endl;
             cout << endl
                  << "Press anything to quit help tab" << endl;
             cin.get();
             system("clear");
             this->enablePrinting = true;
         }
-        else if (userCommand == "quit")
+        else if (userCommand == "EXIT")
         {
-            return 0;
+            exit(0);
         }
         else{
             this->enablePrinting = true;
@@ -104,20 +103,21 @@ int InterfaceSubservice::updateClientScreen()
         string userCommand;
         getline(cin, userCommand);
 
-        if (userCommand == "help")
+        if (userCommand == "HELP")
         {
             system("clear");
-            cout << "  -  help - show this help" << endl;
-            cout << "  -  quit - exit the program" << endl;
+            cout << "  -  HELP - show this help" << endl;
+            cout << "  -  QUIT - exit the program" << endl;
             cout << endl
                  << "Press anything to quit help tab" << endl;
             cin.get();
         }
-        else if (userCommand == "quit")
+        else if (userCommand == "EXIT")
         {
+            // make function
             system("clear");
             cout << "Exiting..." << endl;
-            return 0;
+            exit(0);
         }
     }
     return 0;

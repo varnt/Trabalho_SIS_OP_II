@@ -40,10 +40,6 @@ int SocketAPI::createSocket()
         cerr << "SocketAPI>createSocket> error binding socket = " << strerror(errno) << endl;
         return -1;
     }
-    else
-    {
-        //cout << "SocketAPI>createSocket> socket binded" << endl;
-    }
     /*
     struct sockaddr_in {
         short            sin_family;   // e.g. AF_INET, AF_INET6
@@ -89,10 +85,6 @@ int SocketAPI::listenSocket(packet_struct *packet)
     }
     memcpy(packet, buffer, packetSize);
 
-    cout << "SocketAPI>listenSocket> received from socket = " << clientAddr.sin_port << endl;
-    cout << "received from port = " << packet->src_port << endl;
-    cout << "received from ip = " << packet->ip_src << endl;
-
     return n;
 }
 
@@ -103,7 +95,6 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     char buffer[1024];
     bzero(buffer, 1024);
 
-    //cout << "SocketAPI>sendPacket> sending mensage = " << packet->message << endl;
 
     memcpy(buffer, packet, packetSize);
 
@@ -112,7 +103,6 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     destAddr.sin_port = htons(destPort);
     destAddr.sin_addr.s_addr = inet_addr((char *)destIP.c_str());
 
-    //cout << "SocketAPI>sendPacket> sending to port = " << htons(destAddr.sin_port) << endl;
 
     bzero(&(destAddr.sin_zero), 8);
     int broadcastEnable = 1;

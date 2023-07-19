@@ -34,7 +34,6 @@ int MonitoringSubservice::serverMonitoringSubservice()
     {
         participante *currparticipante = this->tabelaParticipantes;
         SocketAPI socket(PORTA_GERENCIA, "server");
-        cout << "ManagementSubservice>serverManagementSubservice> ManagementSubservice starting" << endl;
         while (currparticipante != nullptr)
         {
             int i;
@@ -46,10 +45,9 @@ int MonitoringSubservice::serverMonitoringSubservice()
                 int m = socket.sendPacket(&packet_sent, currparticipante->ip_address, PORTA_GERENCIA_CLIENTE); // end, porta
                 if (m < 0)
                 {
-                    cout << "ManagementSubservice>serverManagementSubservice> Error sending packet" << endl;
+                    cerr << "ManagementSubservice>serverManagementSubservice> Error sending packet" << endl;
                     return -1;
                 }
-                cout << "sending syn packet to " << currparticipante->ip_address << endl;
 
                 int n = 0;
                 int j = 0;
@@ -59,11 +57,10 @@ int MonitoringSubservice::serverMonitoringSubservice()
 
                     // passive listening to the socket waiting for ACK packet
                     n = socket.listenSocket(&ackPacket);
-                    cout << "ManagementSubservice>serverManagementSubservice> n = " << n << endl;
                     if (n < 0)
                     {
                         ackPacket.message = -2;
-                            currparticipante->status = "sleep";
+                            currparticipante->status = "ASLEEP";
 
                         if (errno == EAGAIN || errno == EWOULDBLOCK)
                         {
@@ -71,14 +68,12 @@ int MonitoringSubservice::serverMonitoringSubservice()
                         }
                         else
                         {
-                            cout << "ManagementSubservice>serverManagementSubservice> Error listening to socket" << endl;
+                            cerr << "ManagementSubservice>serverManagementSubservice> Error listening to socket" << endl;
                             return -1;
                         }
                     }
                     else 
                     {
-                        // cout << "received packet from " << ackPacket.ip_src << endl;
-                        // cout << "message = " << ackPacket.message << endl;
                         if (ackPacket.message == ACK)
                         {
                             // behavior when receive an ACK
@@ -87,16 +82,10 @@ int MonitoringSubservice::serverMonitoringSubservice()
                         }
                         else
                         {
-                        cout << "ManagementSubservice>serverManagementSubservice> No packet received ------------ must be sleeping" << endl;
-//  
-                            currparticipante->status = "sleep";
+                        cerr << "ManagementSubservice>serverManagementSubservice> No packet received ------------ must be sleeping" << endl;
+                            currparticipante->status = "ASLEEP";
                         }
                     }
-                    // else
-                    // {
-                    //     currparticipante->status = "sleep";
-                    //     cout << "ManagementSubservice>serverManagementSubservice> No packet received ------------ must be sleeping" << endl;
-                    // }
                     j++;
                 }
             }
@@ -122,7 +111,6 @@ int MonitoringSubservice::clientMonitoringSubservice()
     this->setActive();
     while (this->isActive())
     {
-        cout << "listenning on socket = " << PORTA_GERENCIA_CLIENTE << endl;
         n = socket.listenSocket(&packet_received);
         if (n < 0)
         {
@@ -132,24 +120,20 @@ int MonitoringSubservice::clientMonitoringSubservice()
             }
             else
             {
-                cout << "MonitoringSubservice>clientMonitoringSubservice> Error listening to socket" << endl;
+                cerr << "MonitoringSubservice>clientMonitoringSubservice> Error listening to socket" << endl;
                 return -1;
             }
         }
         else if (n > 0)
         {
-            cout << "received packet from " << packet_received.ip_src << endl;
-            cout << "message = " << packet_received.message << endl;
             if (packet_received.message == SYN)
             {
                 int seqNum = 0;
                 packet_struct packet_sent = createPacket(seqNum, PORTA_GERENCIA, PORTA_GERENCIA_CLIENTE, packet_received.ip_src, this->localIpAddress, this->localHostname, this->localMacAddress, this->localStatus, ACK);
-                cout << "sending ACK to " << packet_sent.ip_dest << endl;
-                cout << "sending message = " << packet_sent.message << endl;
                 n = socket.sendPacket(&packet_sent, packet_sent.ip_dest, PORTA_GERENCIA);
                 if (n < 0)
                 {
-                    cout << "MonitoringSubservice>clientMonitoringSubservice> Error sending packet" << endl;
+                    cerr << "MonitoringSubservice>clientMonitoringSubservice> Error sending packet" << endl;
                     return -1;
                 }
             }

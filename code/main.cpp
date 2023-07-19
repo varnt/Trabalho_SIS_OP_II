@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
     // Critical section for TableUpdate declaration
     cout << "\n";
-    novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
+    // novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
 
     extern bool tabelaParticipantesUpdate;
 
