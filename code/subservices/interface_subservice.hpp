@@ -21,6 +21,8 @@ private:
     bool currentState;
     participante* tabelaParticipantes;
     bool* tabelaEstaAtualizada;
+    void printTable(bool& tabelaEstaAtualizada, participante*& tabelaParticipantes);
+    bool enablePrinting;
 };
 
 #endif

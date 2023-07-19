@@ -69,3 +69,4 @@ bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,
 bool estaNaTabela(participante*& tabelaParticipantes, std::string mac_address);
 
 #endif
+

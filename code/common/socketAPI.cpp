@@ -58,9 +58,9 @@ int SocketAPI::createSocket()
 int SocketAPI::listenSocket(packet_struct *packet)
 {
     //Associates a local address with a socket and catch errors.
-    cout << "SocketAPI>listenSocket> listening on port = " << this->port << endl;
+    // cout << "SocketAPI>listenSocket> listening on port = " << this->port << endl;
 
-    struct timeval timeout = {.tv_sec = 5};
+    struct timeval timeout = {.tv_sec = 1};
     int x = setsockopt(this->socketfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
     if (x < 0)
     {
@@ -79,7 +79,7 @@ int SocketAPI::listenSocket(packet_struct *packet)
     if (n < 0)
     {
         if(errno == EAGAIN || errno == EWOULDBLOCK) {
-            cout << "SocketAPI>listenSocket> timeout" << endl;
+            // cout << "SocketAPI>listenSocket> timeout" << endl;
             return n;
         }
         else{
@@ -112,7 +112,7 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
     destAddr.sin_port = htons(destPort);
     destAddr.sin_addr.s_addr = inet_addr((char *)destIP.c_str());
 
-    cout << "SocketAPI>sendPacket> sending to port = " << destAddr.sin_port << endl;
+    cout << "SocketAPI>sendPacket> sending to port = " << htons(destAddr.sin_port) << endl;
 
     bzero(&(destAddr.sin_zero), 8);
     int broadcastEnable = 1;
