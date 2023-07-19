@@ -101,10 +101,10 @@ int DiscoverySubservice::clientDiscoverySubservice()
 {
     cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice is starting" << endl;
     // create socket to broadcast
-    SocketAPI clientSocket(PORTA_DESCOBERTA, "client");
+    SocketAPI clientSocket(PORTA_DESCOBERTA_CLIENTE, "client");
     cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice created a socketfd:" << clientSocket.getSocketfd() << endl;
     uint seqNum = 0;
-    packet_struct synPacket = createPacket(seqNum, PORTA_DESCOBERTA, PORTA_DESCOBERTA, GLOBAL_BROADCAST_ADD, this->localIP, this->localHostname, this->localMAC, this->localStatus, SYN);
+    packet_struct synPacket = createPacket(seqNum, PORTA_DESCOBERTA, PORTA_DESCOBERTA_CLIENTE, GLOBAL_BROADCAST_ADD, this->localIP, this->localHostname, this->localMAC, this->localStatus, SYN);
     cout << "DiscoverySubservice>clientDiscoverySubservice> DiscoverySubservice created a SYN packet" << endl;
     packet_struct ackPacket;
 
