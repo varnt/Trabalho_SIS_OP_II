@@ -1,7 +1,9 @@
 #include "interface_subservice.hpp"
 
-InterfaceSubservice::InterfaceSubservice(participante *&tabelaParticipantes){
+InterfaceSubservice::InterfaceSubservice(participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate)
+{
     this->tabelaParticipantes = tabelaParticipantes;
+    this->tabelaEstaAtualizada = tabelaParticipantesUpdate;
 };
 InterfaceSubservice::~InterfaceSubservice(){};
 
@@ -33,8 +35,13 @@ int InterfaceSubservice::updateServerScreen()
         system("clear");
         // set cursor to top left
 
-        this->gotoxy(0, 3);
-        printList(tabelaParticipantes);
+        *tabelaEstaAtualizada = false;
+
+        if (*tabelaEstaAtualizada == false)
+        {
+            this->gotoxy(0, 3);
+            printList(tabelaParticipantes);
+        }
 
         this->gotoxy(0, 0);
         cout << "Insert Command > ";
@@ -46,12 +53,44 @@ int InterfaceSubservice::updateServerScreen()
             system("clear");
             cout << "  -  help - show this help" << endl;
             cout << "  -  quit - exit the program" << endl;
-            cout << endl <<"Press anything to quit help tab" << endl;
+            cout << endl
+                 << "Press anything to quit help tab" << endl;
             cin.get();
         }
-        else if(userCommand == "quit"){
+        else if (userCommand == "quit")
+        {
             return 0;
         }
     }
     return 0;
 };
+
+int InterfaceSubservice::updateClientScreen(){
+    while (this->isActive() == true)
+    {
+        // Clear the screen
+        system("clear");
+        // set cursor to top left
+        this->gotoxy(0, 0);
+        cout << "Insert Command > ";
+        string userCommand;
+        getline(cin, userCommand);
+
+        if (userCommand == "help")
+        {
+            system("clear");
+            cout << "  -  help - show this help" << endl;
+            cout << "  -  quit - exit the program" << endl;
+            cout << endl
+                 << "Press anything to quit help tab" << endl;
+            cin.get();
+        }
+        else if (userCommand == "quit")
+        {
+            return 0;
+        }
+    }
+    return 0;
+
+
+}

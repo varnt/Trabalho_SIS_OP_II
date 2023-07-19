@@ -7,6 +7,7 @@
 int main(int argc, char **argv)
 {
 
+    // Gets local information
     string localMacAddress = getMacAddress();
     string localStatus = "awaken";
     string localIpAddress = getLocalIpAddress();
@@ -23,86 +24,32 @@ int main(int argc, char **argv)
         sessionMode = "client";
     }
 
+    // Critical section for Table declaration
     participante *tabelaParticipantes = nullptr; // inicio da lista
 
+    // Critical section for TableUpdate declaration
     cout << "\n";
     novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
 
-    InterfaceSubservice interface(tabelaParticipantes);
-    interface.setActive();
-    interface.updateServerScreen();
+    extern bool tabelaParticipantesUpdate;
+
+    InterfaceSubservice interface(tabelaParticipantes, &tabelaParticipantesUpdate);
 
     // printList(tabelaParticipantes);
 
     DiscoverySubservice discovery_obj(localHostName, localIpAddress, localMacAddress, localStatus);
     if (sessionMode == "manager")
     {
+        interface.setActive();
+        interface.updateServerScreen();
         discovery_obj.serverDiscoverySubservice(tabelaParticipantes);
     }
     else if (sessionMode == "client")
     {
+        interface.setActive();
+        interface.updateClientScreen();
         discovery_obj.clientDiscoverySubservice();
     }
 
-    // TESTES:
-    /*novoParticipante(tabelaParticipantes, "Adamastor", localIpAddress, "A", localStatus);
-    novoParticipante(tabelaParticipantes, "Beatriz", localIpAddress, localMacAddress, localStatus);
-    printList(tabelaParticipantes);
-    cout<<"\n";
-    excluirParticipante(tabelaParticipantes,"A");
-    printList(tabelaParticipantes);
-    setStatusTabela(tabelaParticipantes,"Batatinha","CEBOLINHA");
-    cout<<"\n";
-    excluirParticipante(tabelaParticipantes,"A");
-    */
-
     return 0;
 }
-/*int main(int argc, char **argv)
-{
-    string hello = "Iniciando sistema Marco Polo de otimização de recursos na rede local";
-    //[parametros da maquina local
-    string localMacAddress = getMacAddress();
-    localStatus = "awaken";
-    string localIpAddress= getLocalIpAddress();
-    string localHostName = gethostname();
-
-    //novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
-    //novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
-    // Impressão da lista encadeada
-
-
-    //definir variaveis globais do semaforo
-
-    //]
-    //[inicializar parametros web socket aqui
-    //porta padrao é 4000
-    //]
-
-    //[inicializar thread aqui
-    // pthread create (para cada função monitoramento ....)
-    //]
-
-
-    // Terminal talk
-    cout << hello;
-    cout << endl;
-    ///printList(tabelaParticipantes);
-
-
-    //disparar thread da funcao de descoberta
-   ///descoberta();
-   //disparar thread da função de monitoramento
-
-   ///monitoring_subservice();
-
-    //thread( monitoring_subservice,)
-
-
-
-
-
-    return 0;
-}
-
-            */

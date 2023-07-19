@@ -2,7 +2,8 @@
 #include "global.hpp"
 
 //Variaveis compartilhadas
-
+bool tabelaParticipantesUpdate = false;
+bool* tabelaParticipantesUpdate_ptr = &tabelaParticipantesUpdate;
 string getLocalIpAddress()
 {
     //printf("... getting ip address...\n");

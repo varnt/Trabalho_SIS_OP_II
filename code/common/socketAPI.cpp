@@ -89,8 +89,9 @@ int SocketAPI::listenSocket(packet_struct *packet)
     }
     memcpy(packet, buffer, packetSize);
 
-    packet->src_port = clientAddr.sin_port;
     cout << "SocketAPI>listenSocket> received from socket = " << clientAddr.sin_port << endl;
+    cout << "received from port = " << packet->src_port << endl;
+    cout << "received from ip = " << packet->ip_src << endl;
 
     return n;
 }
@@ -106,12 +107,12 @@ int SocketAPI::sendPacket(packet_struct *packet, string destIP, uint16_t destPor
 
     memcpy(buffer, packet, packetSize);
 
-     cout.write(buffer, sizeof(buffer));
-
     struct sockaddr_in destAddr;
     destAddr.sin_family = AF_INET;
     destAddr.sin_port = htons(destPort);
     destAddr.sin_addr.s_addr = inet_addr((char *)destIP.c_str());
+
+    cout << "SocketAPI>sendPacket> sending to port = " << destAddr.sin_port << endl;
 
     bzero(&(destAddr.sin_zero), 8);
     int broadcastEnable = 1;

@@ -6,10 +6,10 @@
 class InterfaceSubservice
 {
 public:
-    InterfaceSubservice(participante*& tabelaParticipantes);
+    InterfaceSubservice(participante*& tabelaParticipantes, bool* tabelaParticipantesUpdate);
     ~InterfaceSubservice();
     int updateServerScreen();
-    //void updateTable();
+    int updateClientScreen();
 
     bool isActive();
     void setActive();
@@ -20,6 +20,7 @@ public:
 private:
     bool currentState;
     participante* tabelaParticipantes;
+    bool* tabelaEstaAtualizada;
 };
 
 #endif
