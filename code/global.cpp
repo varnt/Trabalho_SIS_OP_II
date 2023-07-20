@@ -232,4 +232,3 @@ bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)
     }
     return false;
 }
-
