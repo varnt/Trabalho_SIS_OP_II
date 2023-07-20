@@ -89,7 +89,7 @@ int InterfaceSubservice::updateServerScreen() {
       this->enablePrinting = true;
     } else if (command == "EXIT") {
       exit(0);
-    } else if (command == "WAKE") {
+    } else if (command == "WAKEUP") {
       wakeOnLan(this->tabelaParticipantes, argument);
     } else {
       this->enablePrinting = true;
