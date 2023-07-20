@@ -29,6 +29,7 @@
 #include <chrono> //for timeouts
 
 #include <thread> //for threads
+#include <mutex> // race condition
 
 using namespace std;
 
@@ -42,7 +43,7 @@ using namespace std;
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
 
-
+extern mutex mtx, table_mtx;
 
 // Definição da estrutura do nó da lista encadeada
 struct participante {

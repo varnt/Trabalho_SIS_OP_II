@@ -66,8 +66,12 @@ int DiscoverySubservice::serverDiscoverySubservice(participante *&tabelaParticip
                 if (estaNaTabela(tabelaParticipantes, newMAC) == false)
                 {
                     // include the new participant in the table
+                    mtx.lock();
+                    table_mtx.lock();
                     novoParticipante(tabelaParticipantes, newHostname, newIP, newMAC, newStatus);
+                    mtx.unlock();
                     *tabelaEstaAtualizada = false;
+                    table_mtx.unlock();
                 }
 
                 // send an ACK packet to the new participant

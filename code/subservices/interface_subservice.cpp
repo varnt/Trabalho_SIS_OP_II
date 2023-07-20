@@ -38,7 +38,9 @@ void InterfaceSubservice::printTable(bool &tabelaEstaAtualizada, participante *&
             printList(tabelaParticipantes);
             this->gotoxy(0, 0);
             cout << "Insert Command > ";
+            table_mtx.lock();
             tabelaEstaAtualizada = true;
+            table_mtx.unlock();
 
             //sleep(3);
         }
@@ -49,7 +51,9 @@ int InterfaceSubservice::updateServerScreen()
 {
     this->setActive();
     this->enablePrinting = true;
+    table_mtx.lock();
     *tabelaEstaAtualizada = false;
+    table_mtx.unlock();
 
     thread printTable_thr([&]()
                           {

@@ -3,6 +3,8 @@
 #include "./subservices/discovery_subservice.hpp"
 #include "global.hpp"
 
+
+
 int main(int argc, char **argv)
 {
     // pthread_t mon_thr, dsc_thr, int_thr, man_thr;
@@ -57,7 +59,7 @@ int main(int argc, char **argv)
             interface.updateClientScreen(); });
         thread dsc_thr([&discovery_obj, &tabelaParticipantes]()
                        {
-                           discovery_obj.clientDiscoverySubservice(); // thread
+                           discovery_obj.clientDiscoverySubservice();
                        });
         thread mon_thr([&monitoring_obj]()
                        { monitoring_obj.clientMonitoringSubservice(); });
@@ -66,7 +68,6 @@ int main(int argc, char **argv)
         dsc_thr.join();
         mon_thr.join();
     }
-    // join
-    // join
+
     return 0;
 }
