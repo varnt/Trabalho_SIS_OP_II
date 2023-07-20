@@ -39,6 +39,7 @@ using namespace std;
 #define PORTA_MONITORAMENTO_CLIENTE 3001 //subservico Monitoramento
 #define PORTA_GERENCIA 4002 //subservico Gerencia
 #define PORTA_GERENCIA_CLIENTE 3002 //subservico Gerencia
+#define PORTA_EXIT 3003 // porta para saida
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 

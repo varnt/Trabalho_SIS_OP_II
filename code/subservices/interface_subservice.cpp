@@ -1,4 +1,6 @@
 #include "interface_subservice.hpp"
+#include "../common/packet.hpp"
+#include "../common/socketAPI.hpp"
 
 InterfaceSubservice::InterfaceSubservice(participante *&tabelaParticipantes,
                                          bool *tabelaParticipantesUpdate) {
@@ -88,7 +90,7 @@ int InterfaceSubservice::updateServerScreen() {
     } else if (command == "EXIT") {
       exit(0);
     } else if (command == "WAKE") {
-        wakeOnLan(this->tabelaParticipantes, argument);
+      wakeOnLan(this->tabelaParticipantes, argument);
     } else {
       this->enablePrinting = true;
     }
@@ -117,6 +119,19 @@ int InterfaceSubservice::updateClientScreen() {
       // make function
       system("clear");
       cout << "Exiting..." << endl;
+      SocketAPI clientSocket(PORTA_EXIT, "client");
+      packet_struct exitPacket =
+          createPacket(0, PORTA_DESCOBERTA, PORTA_EXIT,
+                       GLOBAL_BROADCAST_ADD, getLocalIpAddress(), gethostname(),
+                       getMacAddress(), "awaken", EXIT_MSG);
+      int n = clientSocket.sendPacket(&exitPacket, GLOBAL_BROADCAST_ADD,
+                                      PORTA_DESCOBERTA);
+      if (n < 0) {
+        cerr << "DiscoverySubservice>clientDiscoverySubservice> error on "
+                "sending "
+                "EXIT_MSG = "
+             << strerror(errno) << endl;
+      }
       exit(0);
     }
   }
