@@ -82,6 +82,7 @@ int InterfaceSubservice::updateServerScreen() {
       this->enablePrinting = false;
       system("clear");
       cout << "  -  HELP - show this help" << endl;
+      cout << "  -  WAKEUP <hostname>- wake computer with the hostname argument" << endl;
       cout << "  -  EXIT - exit the program" << endl;
       cout << endl << "Press anything to quit help tab" << endl;
       cin.get();
