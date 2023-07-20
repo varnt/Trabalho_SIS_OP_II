@@ -14,6 +14,7 @@ public:
     bool isActive();
     void setActive();
     void setNotActive();
+    void exitProgram();
 
     void gotoxy(int x, int y);
 

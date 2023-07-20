@@ -13,7 +13,7 @@
 #define SYN 0
 #define SYN_ACK 1
 #define ACK 2
-
+#define EXIT_MSG 3
 // Definição de estrutura de pacotes
 typedef struct __packet_struct {
     uint sequence_number; //Número de sequência
