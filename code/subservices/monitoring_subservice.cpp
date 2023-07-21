@@ -97,7 +97,7 @@ int MonitoringSubservice::serverMonitoringSubservice() {
         break;
       }
     }
-    this_thread::sleep_for(chrono::seconds(5));
+    this_thread::sleep_for(chrono::seconds(MONITORING_FREQUENCY_SEC));
     table_mtx.lock();
     *tabelaEstaAtualizada = false;
     table_mtx.unlock();
@@ -117,10 +117,10 @@ int MonitoringSubservice::clientMonitoringSubservice() {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
         n = 1;
       } else {
-        cerr << "MonitoringSubservice>clientMonitoringSubservice> Error "
-                "listening to socket"
-             << endl;
-        return -1;
+        // cerr << "MonitoringSubservice>clientMonitoringSubservice> Error "
+        //         "listening to socket"
+        //      << endl;
+        // return -1;
       }
     } else if (n > 0) {
       if (packet_received.message == SYN) {
@@ -132,10 +132,10 @@ int MonitoringSubservice::clientMonitoringSubservice() {
         n = socket.sendPacket(&packet_sent, packet_sent.ip_dest,
                               PORTA_GERENCIA);
         if (n < 0) {
-          cerr << "MonitoringSubservice>clientMonitoringSubservice> Error "
-                  "sending packet"
-               << endl;
-          return -1;
+          // cerr << "MonitoringSubservice>clientMonitoringSubservice> Error "
+          //         "sending packet"
+          //      << endl;
+          // return -1;
         }
       }
     }

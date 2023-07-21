@@ -41,6 +41,7 @@ using namespace std;
 #define PORTA_GERENCIA_CLIENTE 3002 //subservico Gerencia
 #define PORTA_EXIT 3003 // porta para saida
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
+#define MONITORING_FREQUENCY_SEC 0
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
 
