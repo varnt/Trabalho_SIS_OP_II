@@ -24,10 +24,11 @@ void InterfaceSubservice::printTable(bool &tabelaEstaAtualizada,
   system("clear");
   while (true) {
     if (tabelaEstaAtualizada == false && this->enablePrinting == true) {
-      this->gotoxy(1, 3);
+      gotoxy(0, 0);
+      cout << "Press Enter to insert command";
+      this->gotoxy(1, 5);
+      system("tput ed");
       printList(tabelaParticipantes);
-      this->gotoxy(0, 0);
-      cout << "Insert Command > ";
       table_mtx.lock();
       tabelaEstaAtualizada = true;
       table_mtx.unlock();
@@ -70,11 +71,11 @@ int InterfaceSubservice::updateServerScreen() {
   while (this->isActive() == true) {
 
     // set cursor to top left'
-    this->gotoxy(0, 0);
-    cout << "Insert Command > ";
     string userCommand;
     getline(cin, userCommand);
     this->enablePrinting = false;
+    system("clear");
+    cout << "Insert Command > ";
     getline(cin, userCommand);
     string command = userCommand.substr(0, userCommand.find(" "));
     string argument = userCommand.substr(userCommand.find(" ") + 1);
@@ -95,6 +96,8 @@ int InterfaceSubservice::updateServerScreen() {
     } else {
       this->enablePrinting = true;
     }
+    gotoxy(1, 5);
+    printList(tabelaParticipantes);
   }
   printTable_thr.join();
   return 0;
