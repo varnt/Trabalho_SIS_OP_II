@@ -32,7 +32,7 @@ present:
 	$(GCC) $(TARGET) $(GCC_OBJECTS) $(THREAD) 
 	./$(TARGET)
 #Regra para Compilar e executar MAGANER:
-present:
+presentm:
 	$(RM)  $(TARGET).tgz $(TARGET)
 	clear
 	$(GCC) $(TARGET) $(GCC_OBJECTS) $(THREAD) 
