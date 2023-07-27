@@ -3,10 +3,9 @@
 
 //Variaveis compartilhadas
 bool tabelaParticipantesUpdate = false;
-bool* tabelaParticipantesUpdate_ptr = &tabelaParticipantesUpdate;
+mutex mtx, table_mtx;
 string getLocalIpAddress()
 {
-    //printf("... getting ip address...\n");
     string erro = "erro";
     struct ifaddrs *ifaddr, *ifa;
     int family, s, n;
@@ -100,7 +99,6 @@ string getMacAddress()
                 //return 1;
             }
 
-            //printf("%s: %s\n", ifa->ifa_name, host);
             std::string name(ifa->ifa_name);
             if ("lo" != name)
             {
@@ -194,7 +192,9 @@ void printList(participante *tabelaParticipantes)
     while (currparticipante != nullptr)
     {
         std::cout << ">> Hostname: " << currparticipante->hostname << ", IP: " << currparticipante->ip_address << ", MAC Address: " << currparticipante->mac_address << ", Status: " << currparticipante->status << std::endl;
+        mtx.lock();
         currparticipante = currparticipante->next;
+        mtx.unlock();
     }
 }
 
@@ -226,7 +226,9 @@ bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)
         {
             return true;
         }
-        participanteAtual = participanteAtual->next;
+
+    participanteAtual = participanteAtual->next;
+
     }
     return false;
 }

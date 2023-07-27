@@ -3,17 +3,18 @@
 # Nome do executável
 TARGET = GreenUP_SIS_OP_2
 GCC_OBJECTS = main.cpp global.cpp ./subservices/discovery_subservice.cpp ./subservices/interface_subservice.cpp ./subservices/monitoring_subservice.cpp   ./common/packet.cpp ./common/socketAPI.cpp
-			
+
 
 
 # Comandos do terminal
 GCC = g++ -Wall -o
 RM = rm -f
+THREAD = -lpthread
 
 # Regra padrão
 all: $(TARGET)
 $(TARGET): $(GCC_OBJECTS)
-	$(GCC) $(TARGET) $(GCC_OBJECTS)
+	$(GCC) $(TARGET) $(GCC_OBJECTS) $(THREAD) 
 
 
 # Regra para executar o programa
@@ -24,12 +25,18 @@ run_manager: $(TARGET)
 	./$(TARGET) manager
 	
 
-#Regra para Compilar e executar:
+#Regra para Compilar e executar CLIENTE:
 present:
 	$(RM)  $(TARGET).tgz $(TARGET)
 	clear
-	$(GCC) $(TARGET) $(GCC_OBJECTS)
+	$(GCC) $(TARGET) $(GCC_OBJECTS) $(THREAD) 
 	./$(TARGET)
+#Regra para Compilar e executar MAGANER:
+presentm:
+	$(RM)  $(TARGET).tgz $(TARGET)
+	clear
+	$(GCC) $(TARGET) $(GCC_OBJECTS) $(THREAD) 
+	./$(TARGET) manager
 # Regra para limpar os arquivos gerados
 clean:
 	$(RM)  $(TARGET).tgz $(TARGET)

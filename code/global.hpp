@@ -29,20 +29,23 @@
 #include <chrono> //for timeouts
 
 #include <thread> //for threads
+#include <mutex> // race condition
 
 using namespace std;
 
-#define PORTA_DESCOBERTA 4000 //subservico Descoberta
-#define PORTA_DESCOBERTA_CLIENTE 3000 //subservico Descoberta
-#define PORTA_MONITORAMENTO 4001 //subservico Monitoramento
-#define PORTA_MONITORAMENTO_CLIENTE 3001 //subservico Monitoramento
-#define PORTA_GERENCIA 4002 //subservico Gerencia
-#define PORTA_GERENCIA_CLIENTE 3002 //subservico Gerencia
+#define PORTA_DESCOBERTA 20000 //subservico Descoberta
+#define PORTA_DESCOBERTA_CLIENTE 20001 //subservico Descoberta
+#define PORTA_MONITORAMENTO 20002 //subservico Monitoramento
+#define PORTA_MONITORAMENTO_CLIENTE 20003 //subservico Monitoramento
+#define PORTA_GERENCIA 20004 //subservico Gerencia
+#define PORTA_GERENCIA_CLIENTE 20005 //subservico Gerencia
+#define PORTA_EXIT 20006 // porta para saida
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
+#define MONITORING_FREQUENCY_SEC 0
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
 
-
+extern mutex mtx, table_mtx;
 
 // Definição da estrutura do nó da lista encadeada
 struct participante {
@@ -53,11 +56,6 @@ struct participante {
     participante* next;
 };
 
-// extern string localStatus; //pode ser bool
-// extern string sessionMode; //"client" ou "manager"
-// extern string modo; //MANDATO OU ELEICAO
-// extern string gerenteHostname; //nome do gerente atual setado na descoberta no modo eleição (ou primeira vez)
-// extern participante* tabelaParticipantes;
 string getLocalIpAddress();
 string gethostname();
 string getMacAddress();
