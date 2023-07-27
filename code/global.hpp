@@ -33,14 +33,15 @@
 
 using namespace std;
 
-#define PORTA_DESCOBERTA 20001 //subservico Descoberta
-#define PORTA_DESCOBERTA_CLIENTE 20004 //subservico Descoberta
+#define PORTA_DESCOBERTA 20000 //subservico Descoberta
+#define PORTA_DESCOBERTA_CLIENTE 20001 //subservico Descoberta
 #define PORTA_MONITORAMENTO 20002 //subservico Monitoramento
-#define PORTA_MONITORAMENTO_CLIENTE 20005 //subservico Monitoramento
-#define PORTA_GERENCIA 20003 //subservico Gerencia
-#define PORTA_GERENCIA_CLIENTE 20006//subservico Gerencia
-#define PORTA_EXIT 20007 // porta para saida
+#define PORTA_MONITORAMENTO_CLIENTE 20003 //subservico Monitoramento
+#define PORTA_GERENCIA 20004 //subservico Gerencia
+#define PORTA_GERENCIA_CLIENTE 20005 //subservico Gerencia
+#define PORTA_EXIT 20006 // porta para saida
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
+#define MONITORING_FREQUENCY_SEC 0
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
 

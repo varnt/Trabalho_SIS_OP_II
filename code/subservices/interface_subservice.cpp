@@ -3,7 +3,8 @@
 #include "../common/socketAPI.hpp"
 
 InterfaceSubservice::InterfaceSubservice(participante *&tabelaParticipantes,
-                                         bool *tabelaParticipantesUpdate) {
+                                         bool *tabelaParticipantesUpdate)
+{
   this->tabelaParticipantes = tabelaParticipantes;
   this->tabelaEstaAtualizada = tabelaParticipantesUpdate;
 };
@@ -15,19 +16,24 @@ void InterfaceSubservice::setActive() { this->currentState = true; };
 
 void InterfaceSubservice::setNotActive() { this->currentState = false; };
 
-void InterfaceSubservice::gotoxy(int x, int y) {
+void InterfaceSubservice::gotoxy(int x, int y)
+{
   printf("%c[%d;%df", 0x1B, y, x);
 };
 
 void InterfaceSubservice::printTable(bool &tabelaEstaAtualizada,
-                                     participante *&tabelaParticipantes) {
+                                     participante *&tabelaParticipantes)
+{
   system("clear");
-  while (true) {
-    if (tabelaEstaAtualizada == false && this->enablePrinting == true) {
-      this->gotoxy(1, 3);
+  while (true)
+  {
+    if (tabelaEstaAtualizada == false && this->enablePrinting == true)
+    {
+      gotoxy(0, 0);
+      cout << "Press Enter to insert command";
+      this->gotoxy(1, 5);
+      system("tput ed");
       printList(tabelaParticipantes);
-      this->gotoxy(0, 0);
-      cout << "Insert Command > ";
       table_mtx.lock();
       tabelaEstaAtualizada = true;
       table_mtx.unlock();
@@ -38,12 +44,15 @@ void InterfaceSubservice::printTable(bool &tabelaEstaAtualizada,
 }
 
 void InterfaceSubservice::wakeOnLan(participante *&tabelaParticipantes,
-                                    string hostname) {
+                                    string hostname)
+{
 
   participante *participanteAtual = this->tabelaParticipantes;
 
-  while (participanteAtual != nullptr) {
-    if (participanteAtual->hostname == hostname) {
+  while (participanteAtual != nullptr)
+  {
+    if (participanteAtual->hostname == hostname)
+    {
       string cmd = "wakeonlan -i " + participanteAtual->ip_address + " " +
                    participanteAtual->mac_address;
       system(cmd.c_str());
@@ -55,53 +64,72 @@ void InterfaceSubservice::wakeOnLan(participante *&tabelaParticipantes,
   cout << "host not found";
 }
 
-int InterfaceSubservice::updateServerScreen() {
+int InterfaceSubservice::updateServerScreen()
+{
   this->setActive();
   this->enablePrinting = true;
   table_mtx.lock();
   *tabelaEstaAtualizada = false;
   table_mtx.unlock();
 
-  thread printTable_thr([&]() {
-    InterfaceSubservice::printTable(*tabelaEstaAtualizada,
-                                    this->tabelaParticipantes); // thread
-  });
+  thread printTable_thr([&]()
+                        {
+                          InterfaceSubservice::printTable(*tabelaEstaAtualizada,
+                                                          this->tabelaParticipantes); // thread
+                        });
 
-  while (this->isActive() == true) {
+  while (this->isActive() == true)
+  {
 
     // set cursor to top left'
-    this->gotoxy(0, 0);
-    cout << "Insert Command > ";
     string userCommand;
     getline(cin, userCommand);
     this->enablePrinting = false;
+    system("clear");
+    this->gotoxy(1, 5);
+    printList(tabelaParticipantes);
+    system("tput ed");
+    this->gotoxy(0, 0);
+    cout << "Insert Command > ";
+
     getline(cin, userCommand);
     string command = userCommand.substr(0, userCommand.find(" "));
     string argument = userCommand.substr(userCommand.find(" ") + 1);
-    if (command == "HELP") {
+    if (command == "HELP")
+    {
       this->enablePrinting = false;
       system("clear");
       cout << "  -  HELP - show this help" << endl;
       cout << "  -  WAKEUP <hostname>- wake computer with the hostname argument" << endl;
       cout << "  -  EXIT - exit the program" << endl;
-      cout << endl << "Press anything to quit help tab" << endl;
+      cout << endl
+           << "Press anything to quit help tab" << endl;
       cin.get();
       system("clear");
-      this->enablePrinting = true;
-    } else if (command == "EXIT") {
-      exit(0);
-    } else if (command == "WAKEUP") {
-      wakeOnLan(this->tabelaParticipantes, argument);
-    } else {
-      this->enablePrinting = true;
     }
+    else if (command == "EXIT")
+    {
+      exit(0);
+    }
+    else if (command == "WAKEUP")
+    {
+      wakeOnLan(this->tabelaParticipantes, argument);
+    }
+    this->enablePrinting = true;
+    gotoxy(0, 0);
+    cout << "Press Enter to insert command";
+    this->gotoxy(1, 5);
+    system("tput ed");
+    printList(tabelaParticipantes);
   }
   printTable_thr.join();
   return 0;
 };
 
-int InterfaceSubservice::updateClientScreen() {
-  while (this->isActive() == true) {
+int InterfaceSubservice::updateClientScreen()
+{
+  while (this->isActive() == true)
+  {
     // Clear the screen
     system("clear");
     // set cursor to top left
@@ -110,13 +138,17 @@ int InterfaceSubservice::updateClientScreen() {
     string userCommand;
     getline(cin, userCommand);
 
-    if (userCommand == "HELP") {
+    if (userCommand == "HELP")
+    {
       system("clear");
       cout << "  -  HELP - show this help" << endl;
       cout << "  -  QUIT - exit the program" << endl;
-      cout << endl << "Press anything to quit help tab" << endl;
+      cout << endl
+           << "Press anything to quit help tab" << endl;
       cin.get();
-    } else if (userCommand == "EXIT") {
+    }
+    else if (userCommand == "EXIT")
+    {
       // make function
       system("clear");
       cout << "Exiting..." << endl;
@@ -127,7 +159,8 @@ int InterfaceSubservice::updateClientScreen() {
                        getMacAddress(), "awaken", EXIT_MSG);
       int n = clientSocket.sendPacket(&exitPacket, GLOBAL_BROADCAST_ADD,
                                       PORTA_DESCOBERTA);
-      if (n < 0) {
+      if (n < 0)
+      {
         cerr << "DiscoverySubservice>clientDiscoverySubservice> error on "
                 "sending "
                 "EXIT_MSG = "
