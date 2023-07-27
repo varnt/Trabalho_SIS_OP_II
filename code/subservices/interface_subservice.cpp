@@ -120,7 +120,10 @@ int InterfaceSubservice::updateServerScreen()
     cout << "Press Enter to insert command";
     this->gotoxy(1, 5);
     system("tput ed");
-    printList(tabelaParticipantes);
+    if (*tabelaEstaAtualizada == false)
+    {
+      printList(tabelaParticipantes);
+    }
   }
   printTable_thr.join();
   return 0;
