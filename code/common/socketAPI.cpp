@@ -56,7 +56,7 @@ int SocketAPI::listenSocket(packet_struct *packet)
     //Associates a local address with a socket and catch errors.
     // cout << "SocketAPI>listenSocket> listening on port = " << this->port << endl;
 
-    struct timeval timeout = {.tv_sec = 1};
+    struct timeval timeout = {.tv_usec = 500};
     int x = setsockopt(this->socketfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
     if (x < 0)
     {

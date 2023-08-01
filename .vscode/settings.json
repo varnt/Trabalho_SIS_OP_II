@@ -49,7 +49,11 @@
     "stdexcept": "cpp",
     "stop_token": "cpp",
     "streambuf": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "condition_variable": "cpp",
+    "iomanip": "cpp",
+    "mutex": "cpp",
+    "sstream": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled",
   "C_Cpp_Runner.msvcBatchPath": "",

@@ -31,6 +31,8 @@
 #include <thread> //for threads
 #include <mutex> // race condition
 
+# include <iomanip> // for setw and setfill
+
 using namespace std;
 
 #define PORTA_DESCOBERTA 20000 //subservico Descoberta

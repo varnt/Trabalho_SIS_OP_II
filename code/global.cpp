@@ -188,10 +188,17 @@ void excluirParticipante(participante *&tabelaParticipantes, std::string mac_add
 // Função para imprimir a lista encadeada
 void printList(participante *tabelaParticipantes)
 {
+    std::cout <<" | " << setw(32) << " HOSTNAME";
+    std::cout <<" | " << setw(20) << " IP ADDRESS";
+    std::cout <<" | " << setw(20) << " MAC ADDRESS";
+    std::cout <<" | " << setw(10) << " STATUS" << " |" << std::endl << std::endl;
     participante *currparticipante = tabelaParticipantes;
     while (currparticipante != nullptr)
     {
-        std::cout << ">> Hostname: " << currparticipante->hostname << ", IP: " << currparticipante->ip_address << ", MAC Address: " << currparticipante->mac_address << ", Status: " << currparticipante->status << std::endl;
+        std::cout << " | " << setw(32) << currparticipante->hostname;
+        std::cout << " | " << setw(20) << currparticipante->ip_address;
+        std::cout << " | " << setw(20) << currparticipante->mac_address;
+        std::cout << " | " << setw(10) << currparticipante->status << " |" << std::endl;
         mtx.lock();
         currparticipante = currparticipante->next;
         mtx.unlock();

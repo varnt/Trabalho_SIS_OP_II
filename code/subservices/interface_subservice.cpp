@@ -37,8 +37,6 @@ void InterfaceSubservice::printTable(bool &tabelaEstaAtualizada,
       table_mtx.lock();
       tabelaEstaAtualizada = true;
       table_mtx.unlock();
-
-      // sleep(3);
     }
   }
 }
@@ -120,10 +118,6 @@ int InterfaceSubservice::updateServerScreen()
     cout << "Press Enter to insert command";
     this->gotoxy(1, 5);
     system("tput ed");
-    if (*tabelaEstaAtualizada == false)
-    {
-      printList(tabelaParticipantes);
-    }
   }
   printTable_thr.join();
   return 0;
