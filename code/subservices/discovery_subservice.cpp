@@ -101,6 +101,7 @@ int DiscoverySubservice::clientDiscoverySubservice() {
 
   // loop to send SYN packets to the broadcast address until receive an ACK
   this->setActive();
+  int attempts = 0;
   while (this->isActive) {
     // send a SYN packet to the broadcast address
     int n = clientSocket.sendPacket(&synPacket, GLOBAL_BROADCAST_ADD,
@@ -113,14 +114,17 @@ int DiscoverySubservice::clientDiscoverySubservice() {
     }
 
     n = 0;
-    // listen to the socket for 5 seconds or until receive an ACK
-    while (n <= 0) {
+    // listen to the socket until receive an ACK or aknowledge being the first
+    while (n <= 0 ) {
       // passive listening to the socket waiting for ACK packet
 
       n = clientSocket.listenSocket(&ackPacket);
       if (n < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
           n = 1;
+          attempts = attempts + 1;
+          cout << "DiscoverySubservice>clientDiscoverySubservice> timeout" << endl; // DEBUG
+          cout << "Attempts: " << attempts << endl; // DEBUG
         } else {
           cerr << "DiscoverySubservice>clientDiscoverySubservice> error on "
                   "listenning for ACK = "
@@ -131,6 +135,9 @@ int DiscoverySubservice::clientDiscoverySubservice() {
       // behavior when receive an ACK
       if (ackPacket.message == ACK) {
         this->setNotActive();
+      }
+      if (attempts >= 3) {
+        return 1;
       }
     }
   }

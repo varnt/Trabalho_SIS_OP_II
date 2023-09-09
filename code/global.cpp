@@ -4,6 +4,7 @@
 //Variaveis compartilhadas
 bool tabelaParticipantesUpdate = false;
 mutex mtx, table_mtx;
+
 string getLocalIpAddress()
 {
     string erro = "erro";
@@ -182,9 +183,9 @@ void excluirParticipante(participante *&tabelaParticipantes, std::string mac_add
         participanteAtual = participanteAtual->next;
     }
     cout << "user not found\n";
-
     return;
 }
+
 // Função para imprimir a lista encadeada
 void printList(participante *tabelaParticipantes)
 {
@@ -205,25 +206,6 @@ void printList(participante *tabelaParticipantes)
     }
 }
 
-bool setStatusTabela(participante *&tabelaParticipantes, std::string ip_address, std::string status)
-{
-    participante *participanteAtual = tabelaParticipantes;
-    while (participanteAtual->ip_address != ip_address)
-    {
-        if (participanteAtual->next != nullptr)
-        {
-            participanteAtual = participanteAtual->next;
-        }
-        else
-        {
-            cout << "user not found\n";
-            return false; //nao encontrei na lista
-        }
-    }
-    participanteAtual->status = status;
-    return true;
-}
-
 bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)
 {
     participante *participanteAtual = tabelaParticipantes;
@@ -239,3 +221,23 @@ bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)
     }
     return false;
 }
+
+
+// bool setStatusTabela(participante *&tabelaParticipantes, std::string ip_address, std::string status)
+// {
+//     participante *participanteAtual = tabelaParticipantes;
+//     while (participanteAtual->ip_address != ip_address)
+//     {
+//         if (participanteAtual->next != nullptr)
+//         {
+//             participanteAtual = participanteAtual->next;
+//         }
+//         else
+//         {
+//             cout << "user not found\n";
+//             return false; //nao encontrei na lista
+//         }
+//     }
+//     participanteAtual->status = status;
+//     return true;
+// }
