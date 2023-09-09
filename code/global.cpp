@@ -144,18 +144,43 @@ void novoParticipante(participante *&tabelaParticipantes, std::string hostname, 
     newparticipante->status = status;
     newparticipante->next = nullptr;
 
+    int id = 0;
     if (tabelaParticipantes == nullptr)
     {
+        newparticipante->id = id;
         tabelaParticipantes = newparticipante;
         return;
     }
+    participante *currparticipante = tabelaParticipantes;
+    while (currparticipante->next != nullptr)
+    {
+        currparticipante = currparticipante->next;
+        id++;
+    }
+    currparticipante->next = newparticipante;
+}
 
+void novoParticipanteID(participante *&tabelaParticipantes, int id, std::string hostname, std::string ip_address, std::string mac_address, std::string status)
+{
+    participante *newparticipante = new participante;
+    newparticipante->hostname = hostname;
+    newparticipante->ip_address = ip_address;
+    newparticipante->mac_address = mac_address;
+    newparticipante->status = status;
+    newparticipante->next = nullptr;
+    newparticipante->id = id;
+
+    if (tabelaParticipantes == nullptr)
+    {
+        newparticipante->id = id;
+        tabelaParticipantes = newparticipante;
+        return;
+    }
     participante *currparticipante = tabelaParticipantes;
     while (currparticipante->next != nullptr)
     {
         currparticipante = currparticipante->next;
     }
-
     currparticipante->next = newparticipante;
 }
 
@@ -189,6 +214,7 @@ void excluirParticipante(participante *&tabelaParticipantes, std::string mac_add
 // Função para imprimir a lista encadeada
 void printList(participante *tabelaParticipantes)
 {
+    std::cout <<" | " << setw(4) << " ID";
     std::cout <<" | " << setw(32) << " HOSTNAME";
     std::cout <<" | " << setw(20) << " IP ADDRESS";
     std::cout <<" | " << setw(20) << " MAC ADDRESS";
@@ -196,6 +222,7 @@ void printList(participante *tabelaParticipantes)
     participante *currparticipante = tabelaParticipantes;
     while (currparticipante != nullptr)
     {
+        std::cout << " | " << setw(4) << currparticipante->id;
         std::cout << " | " << setw(32) << currparticipante->hostname;
         std::cout << " | " << setw(20) << currparticipante->ip_address;
         std::cout << " | " << setw(20) << currparticipante->mac_address;
@@ -223,21 +250,21 @@ bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)
 }
 
 
-// bool setStatusTabela(participante *&tabelaParticipantes, std::string ip_address, std::string status)
-// {
-//     participante *participanteAtual = tabelaParticipantes;
-//     while (participanteAtual->ip_address != ip_address)
-//     {
-//         if (participanteAtual->next != nullptr)
-//         {
-//             participanteAtual = participanteAtual->next;
-//         }
-//         else
-//         {
-//             cout << "user not found\n";
-//             return false; //nao encontrei na lista
-//         }
-//     }
-//     participanteAtual->status = status;
-//     return true;
-// }
+bool setStatusTabela(participante *&tabelaParticipantes, std::string mac_address, std::string status)
+{
+    participante *participanteAtual = tabelaParticipantes;
+    while (participanteAtual->mac_address != mac_address)
+    {
+        if (participanteAtual->next != nullptr)
+        {
+            participanteAtual = participanteAtual->next;
+        }
+        else
+        {
+            cout << "user not found\n";
+            return false; //nao encontrei na lista
+        }
+    }
+    participanteAtual->status = status;
+    return true;
+}

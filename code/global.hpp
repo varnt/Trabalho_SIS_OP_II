@@ -41,6 +41,8 @@ using namespace std;
 #define PORTA_MONITORAMENTO_CLIENTE 20011 //subservico Monitoramento
 #define PORTA_GERENCIA 20002 //subservico Gerencia
 #define PORTA_GERENCIA_CLIENTE 20012 //subservico Gerencia
+#define PORTA_REPLICA 20003 //subservico Replica
+#define PORTA_REPLICA_CLIENTE 20013 //subservico Replica
 #define PORTA_EXIT 20066 // porta para saida
 
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
@@ -53,6 +55,7 @@ extern mutex mtx, table_mtx;
 
 // Definição da estrutura do nó da lista encadeada
 struct participante {
+    int id;
     string hostname;
     string ip_address;
     string mac_address;
@@ -64,9 +67,10 @@ string getLocalIpAddress();
 string gethostname();
 string getMacAddress();
 void novoParticipante(participante*& tabelaParticipantes, string hostname, string ip_address, string mac_address, string status);
+void novoParticipanteID(participante *&tabelaParticipantes, int id, std::string hostname, std::string ip_address, std::string mac_address, std::string status);
 void printList(participante* tabelaParticipantes);
 void excluirParticipante(participante*& tabelaParticipantes, std::string mac_address);
-bool setStatusTabela(participante*& tabelaParticipantes, std::string ip_address,std::string status);
+bool setStatusTabela(participante*& tabelaParticipantes, std::string mac_address,std::string status);
 
 bool estaNaTabela(participante*& tabelaParticipantes, std::string mac_address);
 
