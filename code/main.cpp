@@ -11,7 +11,6 @@ int main(int argc, char **argv)
     string localStatus = "awaken";
     string localIpAddress = getLocalIpAddress();
     string localHostName = gethostname();
-    string sessionMode;
 
     // Critical section for Table declaration
     participante *tabelaParticipantes = nullptr; // inicio da lista

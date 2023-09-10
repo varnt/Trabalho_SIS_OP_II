@@ -53,6 +53,7 @@ using namespace std;
 
 extern mutex mtx, table_mtx;
 extern string MANAGER_IP_ADDRESS;
+extern string sessionMode;
 
 // Definição da estrutura do nó da lista encadeada
 struct participante {

@@ -26,7 +26,7 @@ void ReplicaSubservice::setNotActive() { this->currentState = false; };
 int ReplicaSubservice::serverReplicaSubservice()
 {
     this->setActive();
-    while (this->isActive())
+    while (this->isActive() && sessionMode == "manager")
     {
         uint seqNum = 0;
         uint64_t replica_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -45,8 +45,8 @@ int ReplicaSubservice::serverReplicaSubservice()
             replica_struct ackReplicaPacket;
             int n = 0;
             n = socket.listenReplicaSocket(&ackReplicaPacket);
-            if (n < 0) {
-                //TRATAR CASO DE NÂO TER REPLICA MANAGERS
+            if (n < 0 && attempts >= 5) {
+                sessionMode = "client";
             }
             else if (n > 0)
             {
@@ -59,16 +59,13 @@ int ReplicaSubservice::serverReplicaSubservice()
 };
 
 int ReplicaSubservice::clientReplicaSubservice()
-
-
-
 {
     SocketAPI socket(PORTA_REPLICA_CLIENTE, "client");
     replica_struct replica_packet_received;
 
     int n = 0;
     this->setActive();
-    while (this->isActive())
+    while (this->isActive() $$ sessionMode == "client")
     {
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)

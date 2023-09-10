@@ -24,7 +24,7 @@ void MonitoringSubservice::setNotActive() { this->currentState = false; };
 int MonitoringSubservice::serverMonitoringSubservice()
 {
   this->setActive();
-  while (this->isActive())
+  while (this->isActive() && sessionMode == "manager")
   {
     participante *currparticipante = this->tabelaParticipantes;
     SocketAPI socket(PORTA_GERENCIA, "server");
@@ -146,7 +146,7 @@ int MonitoringSubservice::clientMonitoringSubservice()
 
   int n = 0;
   this->setActive();
-  while (this->isActive())
+  while (this->isActive() && sessionMode == "client")
   {
     n = socket.listenSocket(&packet_received);
     if (n < 0)
@@ -165,7 +165,7 @@ int MonitoringSubservice::clientMonitoringSubservice()
     }
     else if (n > 0)
     {
-      if (packet_received.message == SYN)
+      if (packet_received.message == SYN && packet_received.ip_src == MANAGER_IP_ADDRESS)
       {
         int seqNum = 0;
         packet_struct packet_sent = createPacket(

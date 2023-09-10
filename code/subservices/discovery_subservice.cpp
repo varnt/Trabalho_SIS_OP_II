@@ -30,7 +30,7 @@ int DiscoverySubservice::serverDiscoverySubservice(
   // loop to listen to the socket waiting for SYN packets
   this->setActive();
 
-  while (this->isActive) {
+  while (this->isActive && sessionMode == "manager") {
     // passive listening to the socket
     int n = 0; // num of bytes received
     while (n <= 0) {
@@ -102,7 +102,7 @@ int DiscoverySubservice::clientDiscoverySubservice() {
   // loop to send SYN packets to the broadcast address until receive an ACK
   this->setActive();
   int attempts = 0;
-  while (this->isActive) {
+  while (this->isActive && sessionMode == "client") {
     // send a SYN packet to the broadcast address
     int n = clientSocket.sendPacket(&synPacket, GLOBAL_BROADCAST_ADD,
                                     PORTA_DESCOBERTA);

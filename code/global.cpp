@@ -5,6 +5,7 @@
 bool tabelaParticipantesUpdate = false;
 mutex mtx, table_mtx;
 string MANAGER_IP_ADDRESS;
+string sessionMode;
 
 string getLocalIpAddress()
 {
