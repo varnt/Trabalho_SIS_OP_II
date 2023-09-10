@@ -1,6 +1,7 @@
 #include "./subservices/monitoring_subservice.hpp"
 #include "./subservices/interface_subservice.hpp"
 #include "./subservices/discovery_subservice.hpp"
+#include "./subservices/replica_subservice.hpp"
 #include "global.hpp"
 
 int main(int argc, char **argv)
@@ -33,6 +34,7 @@ int main(int argc, char **argv)
 
     InterfaceSubservice interface(tabelaParticipantes, &tabelaParticipantesUpdate);
     MonitoringSubservice monitoring_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus, sessionMode);
+    ReplicaSubservice replica_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus, sessionMode);
 
     bool isRunning = true;
     while (isRunning == true)
@@ -45,10 +47,13 @@ int main(int argc, char **argv)
                            { discovery_obj.serverDiscoverySubservice(tabelaParticipantes); });
             thread mon_thr([&monitoring_obj]()
                            { monitoring_obj.serverMonitoringSubservice(); });
+            thread rep_thr([&replica_obj]()
+                           { replica_obj.serverReplicaSubservice(); });
 
             int_thr.join();
             dsc_thr.join();
             mon_thr.join();
+            rep_thr.join();
         }
         else if (sessionMode == "client")
         {
@@ -58,9 +63,13 @@ int main(int argc, char **argv)
             interface.updateClientScreen(); });
             thread mon_thr([&monitoring_obj]()
                            { monitoring_obj.clientMonitoringSubservice(); });
+            thread rep_thr([&replica_obj]()
+                           { replica_obj.clientReplicaSubservice(); });
 
             int_thr.join();
             mon_thr.join();
+            rep_thr.join();
+
         }
     }
 

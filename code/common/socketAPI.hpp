@@ -16,6 +16,8 @@ public:
     //TODO: implement the subprocesses interfaces with the socket
     int sendPacket(packet_struct *packet, string destIP, uint16_t destPort);
     int listenSocket(packet_struct *packet);
+    int sendReplicaPacket(replica_struct *packet, string destIP, uint16_t destPort);
+    int listenReplicaSocket(replica_struct *packet);
 
 private:
     int port;           //port number: must be one of the defined ones in global.hpp

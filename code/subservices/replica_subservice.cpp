@@ -1,6 +1,7 @@
 #include "replica_subservice.hpp"
 #include "../common/packet.hpp"
 #include "../common/socketAPI.hpp"
+#include <chrono>
 
 ReplicaSubservice::ReplicaSubservice(
     participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate,
@@ -28,13 +29,13 @@ int ReplicaSubservice::serverReplicaSubservice()
     while (this->isActive())
     {
         uint seqNum = 0;
-        uint64_t replica_timestamp = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
+        uint64_t replica_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         participante *currparticipante = this->tabelaParticipantes;
         SocketAPI socket(PORTA_REPLICA, "server");
         while (currparticipante != nullptr)
         {
-            replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
-            int m = socket.sendPacket(&replica_packet, GLOBAL_BROADCAST_ADD, PORTA_REPLICA_CLIENTE);
+            replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id, currparticipante->hostname, currparticipante->ip_address, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
+            int m = socket.sendReplicaPacket(&replica_packet, GLOBAL_BROADCAST_ADD, PORTA_REPLICA_CLIENTE);
             if (m < 0)
             {
                 cerr << "ReplicaSubservice>serverReplicaSubservice> Error sending packet" << endl;
@@ -43,7 +44,7 @@ int ReplicaSubservice::serverReplicaSubservice()
 
             replica_struct ackReplicaPacket;
             int n = 0;
-            n = socket.listenSocket(&ackReplicaPacket);
+            n = socket.listenReplicaSocket(&ackReplicaPacket);
             if (n < 0) {
                 //TRATAR CASO DE NÂO TER REPLICA MANAGERS
             }
@@ -68,7 +69,7 @@ int ReplicaSubservice::clientReplicaSubservice()
     this->setActive();
     while (this->isActive())
     {
-        n = socket.listenSocket(&replica_packet_received);
+        n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -82,17 +83,17 @@ int ReplicaSubservice::clientReplicaSubservice()
             {
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac))
                 {
-                    setStatusTabela(this->tabelaParticipantes, replica_packet_received.part_mac, replica_packet_received.part_status, replica_packet_received.id);
+                    setStatusTabela(this->tabelaParticipantes, replica_packet_received.part_mac, replica_packet_received.part_status, replica_packet_received.part_id);
                 }
                 else
                 {
-                    novoParticipanteID(this->tabelaParticipantes, replica_packet_received.id, replica_packet_received.hostname, replica_packet_received.ip_src, replica_packet_received.mac_address, replica_packet_received.status);
+                    novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.ip_src, replica_packet_received.part_mac, replica_packet_received.part_status);
                 }
 
 
                 int seqNum = 0;
                 replica_packet_received.message = ACK;
-                n = socket.sendPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
+                n = socket.sendReplicaPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
             }
         }
     }
