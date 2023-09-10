@@ -137,7 +137,7 @@ int DiscoverySubservice::clientDiscoverySubservice() {
         this->setNotActive();
         MANAGER_IP_ADDRESS = ackPacket.ip_src;
       }
-      if (attempts >= 3) {
+      if (attempts >= 5) {
         return 1;
       }
     }

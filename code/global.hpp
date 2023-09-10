@@ -47,7 +47,7 @@ using namespace std;
 
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
 
-#define MONITORING_FREQUENCY_SEC 0  // Time between full table status checks
+#define MONITORING_FREQUENCY_SEC 1  // Time between full table status checks
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
 
