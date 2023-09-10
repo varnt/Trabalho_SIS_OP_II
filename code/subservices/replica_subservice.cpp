@@ -81,20 +81,23 @@ int ReplicaSubservice::clientReplicaSubservice()
         else if (n > 0)
         {
             cout << "REPLICA RECEBIDA IP =  " << replica_packet_received.ip_src << endl;
+            cout << "REPLICA RECEBIDA MENSAGEM =  " << replica_packet_received.message << endl;
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
-                if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac))
+                cout << "REPLICA IP PART =  " << replica_packet_received.part_ip << endl;
+                if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
+                    cout << "ESTA NA TABELA" << endl;
                     setStatusTabela(this->tabelaParticipantes, replica_packet_received.part_mac, replica_packet_received.part_status, replica_packet_received.part_id);
                 }
                 else
                 {
+                    cout << "NAO ESTA NA TABELA" << endl;
                     novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.ip_src, replica_packet_received.part_mac, replica_packet_received.part_status);
                 }
 
 
                 int seqNum = 0;
-                replica_packet_received.message = ACK;
                 n = socket.sendReplicaPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
             }
         }
