@@ -2,7 +2,7 @@
 #include "../common/packet.hpp"
 #include "../common/socketAPI.hpp"
 
-ReplicaSubservice::MonitoringSubservice(
+ReplicaSubservice::ReplicaSubservice(
     participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate,
     string localHostname, string localIpAddress, string localMacAddress,
     string localStatus, string sessionMode)
@@ -33,7 +33,7 @@ int ReplicaSubservice::serverReplicaSubservice()
         SocketAPI socket(PORTA_REPLICA, "server");
         while (currparticipante != nullptr)
         {
-            replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id_address, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
+            replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
             int m = socket.sendPacket(&replica_packet, GLOBAL_BROADCAST_ADD, PORTA_REPLICA_CLIENTE);
             if (m < 0)
             {
@@ -78,11 +78,11 @@ int ReplicaSubservice::clientReplicaSubservice()
         }
         else if (n > 0)
         {
-            if (replica_packet_received.message == SYN)
+            if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
-                if (estaNaTabela(this->tabelaParticipantes, packet_received.part_mac))
+                if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac))
                 {
-                    setStatusTabela(this->tabelaParticipantes, packet_received.part_mac, packet_received.part_status);
+                    setStatusTabela(this->tabelaParticipantes, replica_packet_received.part_mac, replica_packet_received.part_status, replica_packet_received.id);
                 }
                 else
                 {
@@ -92,8 +92,7 @@ int ReplicaSubservice::clientReplicaSubservice()
 
                 int seqNum = 0;
                 replica_packet_received.message = ACK;
-                n = socket.sendPacket(&replica_packet_received, replica_packet_received.ip_src,
-                                      PORTA_REPLICA);
+                n = socket.sendPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
             }
         }
     }

@@ -4,6 +4,7 @@
 //Variaveis compartilhadas
 bool tabelaParticipantesUpdate = false;
 mutex mtx, table_mtx;
+string MANAGER_IP_ADDRESS;
 
 string getLocalIpAddress()
 {
@@ -250,7 +251,7 @@ bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)
 }
 
 
-bool setStatusTabela(participante *&tabelaParticipantes, std::string mac_address, std::string status)
+bool setStatusTabela(participante *&tabelaParticipantes, std::string mac_address, std::string status, int id)
 {
     participante *participanteAtual = tabelaParticipantes;
     while (participanteAtual->mac_address != mac_address)
@@ -266,5 +267,6 @@ bool setStatusTabela(participante *&tabelaParticipantes, std::string mac_address
         }
     }
     participanteAtual->status = status;
+    participanteAtual->id = id;
     return true;
 }

@@ -135,6 +135,7 @@ int DiscoverySubservice::clientDiscoverySubservice() {
       // behavior when receive an ACK
       if (ackPacket.message == ACK) {
         this->setNotActive();
+        MANAGER_IP_ADDRESS = ackPacket.ip_src;
       }
       if (attempts >= 3) {
         return 1;

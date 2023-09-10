@@ -20,6 +20,7 @@ int main(int argc, char **argv)
     if (discovery_obj.clientDiscoverySubservice() == 1)
     {
         sessionMode = "manager";
+        MANAGER_IP_ADDRESS = localIpAddress;
     }
     else
     {

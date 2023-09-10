@@ -52,6 +52,7 @@ using namespace std;
 
 
 extern mutex mtx, table_mtx;
+extern string MANAGER_IP_ADDRESS;
 
 // Definição da estrutura do nó da lista encadeada
 struct participante {
@@ -70,7 +71,7 @@ void novoParticipante(participante*& tabelaParticipantes, string hostname, strin
 void novoParticipanteID(participante *&tabelaParticipantes, int id, std::string hostname, std::string ip_address, std::string mac_address, std::string status);
 void printList(participante* tabelaParticipantes);
 void excluirParticipante(participante*& tabelaParticipantes, std::string mac_address);
-bool setStatusTabela(participante*& tabelaParticipantes, std::string mac_address,std::string status);
+bool setStatusTabela(participante*& tabelaParticipantes, std::string mac_address,std::string status, int id);
 
 bool estaNaTabela(participante*& tabelaParticipantes, std::string mac_address);
 
