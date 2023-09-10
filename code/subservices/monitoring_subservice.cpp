@@ -90,6 +90,13 @@ int MonitoringSubservice::serverMonitoringSubservice() {
           j++;
         }
       }
+      if(currparticipante->mac_address == this->localMacAddress){
+        table_mtx.lock();
+        mtx.lock();
+        currparticipante->status = "MANAGER";
+        table_mtx.unlock();
+        mtx.unlock();
+      }
 
       currparticipante = currparticipante->next;
 
