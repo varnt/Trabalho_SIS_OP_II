@@ -32,6 +32,7 @@ int ReplicaSubservice::serverReplicaSubservice()
         uint64_t replica_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         participante *currparticipante = this->tabelaParticipantes;
         SocketAPI socket(PORTA_REPLICA, "server");
+        int attempts = 0;
         while (currparticipante != nullptr)
         {
             replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id, currparticipante->hostname, currparticipante->ip_address, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
@@ -47,6 +48,7 @@ int ReplicaSubservice::serverReplicaSubservice()
             n = socket.listenReplicaSocket(&ackReplicaPacket);
             if (n < 0 && attempts >= 5) {
                 sessionMode = "client";
+                return -1;
             }
             else if (n > 0)
             {
@@ -65,7 +67,7 @@ int ReplicaSubservice::clientReplicaSubservice()
 
     int n = 0;
     this->setActive();
-    while (this->isActive() $$ sessionMode == "client")
+    while (this->isActive() && sessionMode == "client")
     {
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)
