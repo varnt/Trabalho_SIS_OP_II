@@ -130,7 +130,7 @@ int SocketAPI::listenReplicaSocket(replica_struct *packet)
     //Associates a local address with a socket and catch errors.
     // cout << "SocketAPI>listenSocket> listening on port = " << this->port << endl;
 
-    struct timeval timeout = {.tv_usec = 500};
+    struct timeval timeout = {.tv_usec = 2000};
     int x = setsockopt(this->socketfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
     if (x < 0)
     {
@@ -144,7 +144,7 @@ int SocketAPI::listenReplicaSocket(replica_struct *packet)
 
     struct sockaddr_in clientAddr;
     socklen_t clientAddrLen = sizeof(struct sockaddr_in);
-
+    
     int n = recvfrom(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&clientAddr, &clientAddrLen);
     if (n < 0)
     {
@@ -185,6 +185,8 @@ int SocketAPI::sendReplicaPacket(replica_struct *packet, string destIP, uint16_t
         cerr << "SocketAPI>enableBroadcast> error setting SO_BROADCAST option: " << strerror(errno) << endl;
         return -1;
     }
+
+    
     int n = sendto(this->socketfd, buffer, packetSize, 0, (struct sockaddr *)&destAddr, sizeof(destAddr));
     if (n == -1 && errno == EACCES)
     {

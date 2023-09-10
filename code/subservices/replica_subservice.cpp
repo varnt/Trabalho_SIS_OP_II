@@ -50,6 +50,7 @@ int ReplicaSubservice::serverReplicaSubservice()
             }
             else if (n > 0)
             {
+                cout << "REPLICA RECEBIDA = " << endl;
                 currparticipante = currparticipante->next;
             }
         }
@@ -79,6 +80,7 @@ int ReplicaSubservice::clientReplicaSubservice()
         }
         else if (n > 0)
         {
+            cout << "REPLICA RECEBIDA IP =  " << replica_packet_received.ip_src << endl;
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac))
