@@ -145,7 +145,7 @@ void novoParticipante(participante *&tabelaParticipantes, std::string hostname, 
     newparticipante->status = status;
     newparticipante->next = nullptr;
 
-    int id = 0;
+    int id = 1;
     if (tabelaParticipantes == nullptr)
     {
         newparticipante->id = id;
@@ -156,8 +156,9 @@ void novoParticipante(participante *&tabelaParticipantes, std::string hostname, 
     while (currparticipante->next != nullptr)
     {
         currparticipante = currparticipante->next;
-        id++;
+        id = currparticipante->id;
     }
+    newparticipante->id = id + 1;
     currparticipante->next = newparticipante;
 }
 
