@@ -83,14 +83,10 @@ int ReplicaSubservice::clientReplicaSubservice()
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)
         {
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
             if (errno == EAGAIN || errno == EWOULDBLOCK)
             {
-                n = 1;
-            }
-            else
-            {
-                
-                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                n = -1;         
                 cout << "time since last replica received = " << chrono::duration_cast<std::chrono::seconds> (end - begin).count() << endl;
                 if (chrono::duration_cast<std::chrono::seconds> (end - begin).count() > 20)
                 {
@@ -105,7 +101,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
 
-                 cout << "received replica packet from ip = " << replica_packet_received.part_ip << endl;
+                 cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
 
