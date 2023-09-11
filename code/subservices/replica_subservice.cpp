@@ -49,10 +49,10 @@ int ReplicaSubservice::serverReplicaSubservice()
             if (n <= 0 && attempts >= 10)
             {
                 // REALIZA CHECAGEM DE LIVENESS DO MANAGER
-                std::cout << "não recebeu contato dos participantes" << std::endl;
-                // sessionMode = "client";
-                // replica_status = "off";
-                // return -1;
+                cout << "não recebeu contato dos participantes" << std::endl;
+                sessionMode = "client";
+                replica_status = "off";
+                return -1;
             }
             else if (n < 0 && currparticipante->status == "awaken")
             {
@@ -63,8 +63,8 @@ int ReplicaSubservice::serverReplicaSubservice()
                 cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
                 attempts = 0;
                 // cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
-                currparticipante = currparticipante->next;
             }
+            currparticipante = currparticipante->next;
         }
     }
     replica_status = "off";
