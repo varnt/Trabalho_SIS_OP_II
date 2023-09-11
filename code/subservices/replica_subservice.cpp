@@ -88,7 +88,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 n = -1;         
-                cout << "time since last replica received = " << chrono::duration_cast<std::chrono::seconds> (end - begin).count() << endl;
+                //cout << "time since last replica received = " << chrono::duration_cast<std::chrono::seconds> (end - begin).count() << endl;
                 if (chrono::duration_cast<std::chrono::seconds> (end - begin).count() > 5)
                 {
                     cout << "SEM CONTATO DO MANAGER" << endl;
@@ -103,7 +103,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
                 begin = std::chrono::steady_clock::now();
-                 cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
+                cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
 
