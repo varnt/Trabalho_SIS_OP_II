@@ -85,10 +85,10 @@ int main(int argc, char **argv)
             rep_thr.join();
             rep_thr2.join();
 
-            if (sessionMode == "client")
-            {
-                return 0;
-            }
+            // if (sessionMode == "client")
+            // {
+            //     return 0;
+            // }
             
         }
     }

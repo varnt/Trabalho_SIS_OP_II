@@ -89,7 +89,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             {
                 n = -1;         
                 cout << "time since last replica received = " << chrono::duration_cast<std::chrono::seconds> (end - begin).count() << endl;
-                if (chrono::duration_cast<std::chrono::seconds> (end - begin).count() > 20)
+                if (chrono::duration_cast<std::chrono::seconds> (end - begin).count() > 5)
                 {
                     cout << "SEM CONTATO DO MANAGER" << endl;
                     isElectionPeriod = true;
