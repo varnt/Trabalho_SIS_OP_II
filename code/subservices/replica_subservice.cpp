@@ -150,7 +150,7 @@ int ReplicaSubservice::activeListening()
         // passive listening to the socket
         packet_struct packet_received;
         int n = 0; // num of bytes received
-        while (n <= 0)
+        while (n <= 0 && sessionMode != "manager")
         {
             n = socket.listenSocket(&packet_received);
             if (n < 0)
