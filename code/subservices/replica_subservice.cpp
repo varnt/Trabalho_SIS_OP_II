@@ -99,6 +99,7 @@ int ReplicaSubservice::clientReplicaSubservice()
         }
         else if (n > 0)
         {
+            begin = std::chrono::steady_clock::now();
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
                 begin = std::chrono::steady_clock::now();
