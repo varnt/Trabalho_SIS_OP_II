@@ -237,7 +237,7 @@ int ReplicaSubservice::eleicaoBully()
                 if (m < 0)
                 {
                     cerr << "ReplicaSubservice>eleicaoBully> Error sending packet" << endl;
-                    return -1;
+                    //return -1;
                 }
                 cout << "listening for answer" << endl;
                 int n = socket.listenSocket(&packet_received);
@@ -255,7 +255,7 @@ int ReplicaSubservice::eleicaoBully()
                 MANAGER_IP_ADDRESS = this->localIpAddress;
                 isElectionPeriod = false;
                 this->declareNewLeader();
-                // TRATAR PARA ENTRAR COMO MANAGER AGORA
+                cout << "Closing eleicaoBully" << endl;
                 return 0;
             }
         }

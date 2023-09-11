@@ -64,13 +64,13 @@ int main(int argc, char **argv)
         }
         else if (sessionMode == "client")
         {
+            discovery_status = "running-client";
             participante *tabelaParticipantes = nullptr; // inicio da lista
             DiscoverySubservice discovery_obj(&tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus);
             novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
             
             replica_status = "running-client";
             monitoring_status = "running-client";
-            discovery_status = "running-client";
             interface_status = "running-client";
             thread int_thr([&interface]()
                            {
@@ -83,10 +83,10 @@ int main(int argc, char **argv)
 
             thread rep_thr2([&replica_obj]()
                            { replica_obj.activeListening(); });
-            int_thr.join();
             mon_thr.join();
             rep_thr.join();
             rep_thr2.join();
+            int_thr.join();
 
             cout << "return main" << endl;
             cout << "current session mode: " << sessionMode << endl;
