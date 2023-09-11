@@ -49,10 +49,10 @@ int ReplicaSubservice::serverReplicaSubservice()
             if (n <= 0 && attempts >= 10)
             {
                 // REALIZA CHECAGEM DE LIVENESS DO MANAGER
-
-                sessionMode = "client";
-                replica_status = "off";
-                return -1;
+                std::cout << "não recebeu contato dos participantes" << std::endl;
+                // sessionMode = "client";
+                // replica_status = "off";
+                // return -1;
             }
             else if (n < 0 && currparticipante->status == "awaken")
             {
@@ -60,6 +60,7 @@ int ReplicaSubservice::serverReplicaSubservice()
             }
             else if (n > 0)
             {
+                cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
                 attempts = 0;
                 // cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
                 currparticipante = currparticipante->next;
@@ -187,7 +188,7 @@ int ReplicaSubservice::activeListening()
                     }
                 }
 
-                if (packet_received.sequence_number < self_id)
+                if (packet_received.sequence_number > self_id)
                 {
                     isElectionPeriod = true;
 
