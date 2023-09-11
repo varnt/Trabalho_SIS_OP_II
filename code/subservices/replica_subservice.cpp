@@ -254,7 +254,6 @@ int ReplicaSubservice::eleicaoBully()
                 got_elected = true;
                 MANAGER_IP_ADDRESS = this->localIpAddress;
                 isElectionPeriod = false;
-                sessionMode = "manager";
                 this->declareNewLeader();
                 // TRATAR PARA ENTRAR COMO MANAGER AGORA
                 return 0;
@@ -284,6 +283,7 @@ int ReplicaSubservice::declareNewLeader()
         {
             if (currparticipante->mac_address != this->localMacAddress)
             {
+                cout << "sending new leader packet to ip = " << currparticipante->ip_address << endl;
                 int m = socket.sendPacket(&packet, currparticipante->ip_address, PORTA_NOVO_LIDER);
                 if (m < 0)
                 {
@@ -296,9 +296,14 @@ int ReplicaSubservice::declareNewLeader()
                     j++;
                 }
             }
+            else
+            {
+                n = 1;
+            }
         }
         currparticipante = currparticipante->next;
     }
+    sessionMode = "manager";
     cout << "New leader declaration is done";
     return 0;
     
