@@ -6,7 +6,7 @@
 ReplicaSubservice::ReplicaSubservice(
     participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate,
     string localHostname, string localIpAddress, string localMacAddress,
-    string localStatus, string sessionMode)
+    string localStatus)
 {
     this->tabelaParticipantes = tabelaParticipantes;
     this->tabelaEstaAtualizada = tabelaParticipantesUpdate;
@@ -14,7 +14,6 @@ ReplicaSubservice::ReplicaSubservice(
     this->localIpAddress = localIpAddress;
     this->localMacAddress = localMacAddress;
     this->localStatus = localStatus;
-    this->sessionMode = sessionMode;
     this->latestReplica = 0;
 };
 ReplicaSubservice::~ReplicaSubservice(){};
@@ -33,35 +32,41 @@ int ReplicaSubservice::serverReplicaSubservice()
         participante *currparticipante = this->tabelaParticipantes;
         SocketAPI socket(PORTA_REPLICA, "server");
         int attempts = 0;
-        while (currparticipante != nullptr )
+        while (currparticipante != nullptr)
         {
             replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id, currparticipante->hostname, currparticipante->ip_address, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
             int m = socket.sendReplicaPacket(&replica_packet, GLOBAL_BROADCAST_ADD, PORTA_REPLICA_CLIENTE);
             if (m < 0)
             {
                 cerr << "ReplicaSubservice>serverReplicaSubservice> Error sending packet" << endl;
+                replica_status = "off";
                 return -1;
             }
 
             replica_struct ackReplicaPacket;
             int n = 0;
             n = socket.listenReplicaSocket(&ackReplicaPacket);
-            if (n <= 0 && attempts >= 5) {
+            if (n <= 0 && attempts >= 10)
+            {
+                // REALIZA CHECAGEM DE LIVENESS DO MANAGER
+
                 sessionMode = "client";
-                cout << "return replica subservice" << endl;
+                replica_status = "off";
                 return -1;
             }
-            else if (n <= 0 && currparticipante->status == "awaken") {
+            else if (n < 0 && currparticipante->status == "awaken")
+            {
                 attempts++;
             }
             else if (n > 0)
             {
-                
+                attempts = 0;
+                // cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
                 currparticipante = currparticipante->next;
             }
         }
     }
-    cout << "return replica subservice" << endl;
+    replica_status = "off";
     return 0;
 };
 
@@ -69,11 +74,12 @@ int ReplicaSubservice::clientReplicaSubservice()
 {
     SocketAPI socket(PORTA_REPLICA_CLIENTE, "client");
     replica_struct replica_packet_received;
-
+    uint64_t time_since_update = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     int n = 0;
     this->setActive();
     while (this->isActive() && sessionMode != "manager")
     {
+        
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)
         {
@@ -81,29 +87,221 @@ int ReplicaSubservice::clientReplicaSubservice()
             {
                 n = 1;
             }
+            else
+            {
+                uint64_t time_now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                if (time_now - time_since_update > 30)
+                {
+                    isElectionPeriod = true;
+                }
+                time_since_update = time_now;
+            }
         }
         else if (n > 0)
         {
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
-                
+
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
-                    
+
                     setStatusTabela(this->tabelaParticipantes, replica_packet_received.part_mac, replica_packet_received.part_status, replica_packet_received.part_id);
                 }
                 else
                 {
-                    
+
                     novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.ip_src, replica_packet_received.part_mac, replica_packet_received.part_status);
                 }
-
-
-                int seqNum = 0;
-                n = socket.sendReplicaPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
+                if (replica_packet_received.part_mac == this->localMacAddress)
+                {
+                    self_id = replica_packet_received.part_id;
+                }
+                for (int x = 0; x < 3; x++)
+                {
+                   int m = socket.sendReplicaPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
+                    if (m < 0)
+                    {
+                        cerr << "ReplicaSubservice>eleicaoBully> Error sending packet" << endl;
+                        return -1;
+                    }
+                }
             }
         }
     }
 
+    replica_status = "off";
     return 0;
 };
+
+int ReplicaSubservice::activeListening()
+{
+    isElectionPeriod = false;
+    // Thread para recebendo possíveis contatos de eleição
+    // Se é de ID maior, não faz nada
+
+    // DECLARAÇÂO DA THREAD  BULLY
+    thread ele_thr(&ReplicaSubservice::eleicaoBully, this);
+    SocketAPI socket(PORTA_ELEICAO_CLIENTE, "eleicao");
+
+    while (sessionMode != "manager")
+    {
+        // passive listening to the socket
+        packet_struct packet_received;
+        int n = 0; // num of bytes received
+        while (n <= 0)
+        {
+            n = socket.listenSocket(&packet_received);
+            if (n < 0)
+            {
+                if (errno == EAGAIN || errno == EWOULDBLOCK)
+                {
+                    n = 0;
+                }
+                else
+                {
+                    cerr << "DiscoverySubservice>serverDiscoverySubservice> error on "
+                            "listening socket"
+                         << endl;
+                    return -1;
+                }
+            }
+            else if (n > 0)
+            {
+                if (packet_received.src_port == PORTA_NOVO_LIDER)
+                {
+                    packet_struct packet = createPacket(self_id, PORTA_ELEICAO, PORTA_ELEICAO_CLIENTE,
+                                                        packet_received.ip_src, this->localIpAddress, this->localHostname,
+                                                        this->localMacAddress, this->localStatus, ACK);
+                    MANAGER_IP_ADDRESS = packet_received.ip_src;
+                    for (int x = 0; x < 3; x++)
+                    {
+                        int m = socket.sendPacket(&packet, MANAGER_IP_ADDRESS, PORTA_NOVO_LIDER);
+                        if (m < 0)
+                        {
+                            cerr << "ReplicaSubservice>eleicaoBully> Error sending packet" << endl;
+                            return -1;
+                        }
+                    }
+                }
+
+                if (packet_received.sequence_number < self_id)
+                {
+                    isElectionPeriod = true;
+
+                    packet_struct packet = createPacket(self_id, PORTA_ELEICAO, PORTA_NOVO_LIDER,
+                                                        packet_received.ip_src, this->localIpAddress, this->localHostname,
+                                                        this->localMacAddress, this->localStatus, ACK_ELECTION);
+                    for (int x = 0; x < 3; x++)
+                    {
+                        int m = socket.sendPacket(&packet, packet.ip_dest, PORTA_ELEICAO);
+                        if (m < 0)
+                        {
+                            cerr << "ReplicaSubservice>eleicaoBully> Error sending packet" << endl;
+                            return -1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // JOIN THREAD BULLY
+    ele_thr.join();
+    return 0;
+}
+
+int ReplicaSubservice::eleicaoBully()
+{
+    bool got_elected = false;
+    SocketAPI socket(PORTA_ELEICAO, "eleicao");
+    while (sessionMode != "manager")
+    {
+        if (isElectionPeriod == true)
+        {
+            packet_struct packet_received;
+            packet_struct packet = createPacket(self_id, PORTA_ELEICAO_CLIENTE, PORTA_ELEICAO,
+                                                GLOBAL_BROADCAST_ADD, this->localIpAddress, this->localHostname,
+                                                this->localMacAddress, this->localStatus, SYN_ELECTION);
+            // Se é de ID menor, envia um ACK e contata todos os IDs maiores
+            // Se ele nota que não tem manager, ou se foi informado que não tem manager, ele inicia uma eleição:
+            int j = 0;
+            bool got_answered = false;
+            while (j <= 5 && got_answered == true)
+            {
+                int m = socket.sendPacket(&packet, GLOBAL_BROADCAST_ADD, PORTA_ELEICAO_CLIENTE);
+                if (m < 0)
+                {
+                    cerr << "ReplicaSubservice>eleicaoBully> Error sending packet" << endl;
+                    return -1;
+                }
+                int n = socket.listenSocket(&packet_received);
+                if (n < 0)
+                {
+                    if (errno == EAGAIN || errno == EWOULDBLOCK)
+                    {
+                        j++;
+                    }
+                }
+                else if (n > 0)
+                {
+                    got_answered = true;
+                }
+            }
+            if (j > 5 && got_answered == false)
+            {
+                got_elected = true;
+                MANAGER_IP_ADDRESS = this->localIpAddress;
+                isElectionPeriod = false;
+                sessionMode = "manager";
+                // TRATAR PARA ENTRAR COMO MANAGER AGORA
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+
+int ReplicaSubservice::declareNewLeader()
+{
+    participante *currparticipante = this->tabelaParticipantes;
+    SocketAPI socket(PORTA_NOVO_LIDER, "eleicao");
+    while (currparticipante != nullptr)
+    {
+        uint seqNum = 0;
+        packet_struct packet = createPacket(seqNum, PORTA_ELEICAO_CLIENTE, PORTA_NOVO_LIDER,
+                                            currparticipante->ip_address, this->localIpAddress, this->localHostname,
+                                            this->localMacAddress, this->localStatus, NEW_MANAGER);
+        int j = 0;
+        int n = 0;
+        while (n <= 0 && j < 5)
+        {
+            if (currparticipante->mac_address != this->localMacAddress)
+            {
+                int m = socket.sendPacket(&packet, currparticipante->ip_address, PORTA_NOVO_LIDER);
+                if (m < 0)
+                {
+                    cerr << "ReplicaSubservice>declareNewLeader> Error sending packet" << endl;
+                    return -1;
+                }
+                packet_struct packet_received;
+                n = socket.listenSocket(&packet_received);
+                if (n < 0)
+                {
+                    if (errno == EAGAIN || errno == EWOULDBLOCK)
+                    {
+                        j++;
+                    }
+                }
+                else if (n > 0)
+                {
+                    if (packet_received.message == ACK)
+                    {
+                        return 0;
+                    }
+                }
+            }
+            currparticipante = currparticipante->next;
+        }
+    }
+    return 0;
+}

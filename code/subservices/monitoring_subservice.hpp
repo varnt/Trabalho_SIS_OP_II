@@ -5,7 +5,7 @@
 class MonitoringSubservice
 {
 public:
-    MonitoringSubservice(participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate, string localHostName, string localIpAddress, string localMacAddress, string localStatus, string sessionMode);
+    MonitoringSubservice(participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate, string localHostName, string localIpAddress, string localMacAddress, string localStatus);
     ~MonitoringSubservice();
 
     bool isActive();
@@ -22,7 +22,6 @@ private:
     string localIpAddress;
     string localMacAddress;
     string localStatus;
-    string sessionMode;
 };
 
 #endif

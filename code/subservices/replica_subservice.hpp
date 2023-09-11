@@ -5,7 +5,7 @@
 class ReplicaSubservice
 {
 public:
-    ReplicaSubservice(participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate, string localHostName, string localIpAddress, string localMacAddress, string localStatus, string sessionMode);
+    ReplicaSubservice(participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate, string localHostName, string localIpAddress, string localMacAddress, string localStatus);
     ~ReplicaSubservice();
 
     bool isActive();
@@ -13,7 +13,9 @@ public:
     void setNotActive();
     int serverReplicaSubservice();
     int clientReplicaSubservice();
-
+    int eleicaoBully();
+    int activeListening();
+    int declareNewLeader();
 private:
     bool currentState;
     participante *tabelaParticipantes;
@@ -22,7 +24,6 @@ private:
     string localIpAddress;
     string localMacAddress;
     string localStatus;
-    string sessionMode;
     uint64_t latestReplica; // TORNAR ISSO ACESSÁVEL PELA ELEIÇÃO
 };
 

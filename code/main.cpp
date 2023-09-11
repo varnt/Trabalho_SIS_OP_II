@@ -32,14 +32,18 @@ int main(int argc, char **argv)
     novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
 
     InterfaceSubservice interface(tabelaParticipantes, &tabelaParticipantesUpdate);
-    MonitoringSubservice monitoring_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus, sessionMode);
-    ReplicaSubservice replica_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus, sessionMode);
+    MonitoringSubservice monitoring_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus);
+    ReplicaSubservice replica_obj(tabelaParticipantes, &tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus);
 
-    bool isRunning = true;
+    isRunning = true;
     while (isRunning == true)
     {
         if (sessionMode == "manager")
         {
+            replica_status = "running-manager";
+            monitoring_status = "running-manager";
+            discovery_status = "running-manager";
+            interface_status = "running-manager";
             thread int_thr([&interface]()
                            { interface.updateServerScreen(); });
             thread dsc_thr([&discovery_obj, &tabelaParticipantes]()
@@ -54,10 +58,17 @@ int main(int argc, char **argv)
             mon_thr.join();
             rep_thr.join();
 
-            return 0;
         }
         else if (sessionMode == "client")
         {
+            participante *tabelaParticipantes = nullptr; // inicio da lista
+            DiscoverySubservice discovery_obj(&tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus);
+            novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);
+            
+            replica_status = "running-client";
+            monitoring_status = "running-client";
+            discovery_status = "running-client";
+            interface_status = "running-client";
             thread int_thr([&interface]()
                            {
             interface.setActive();
@@ -67,10 +78,13 @@ int main(int argc, char **argv)
             thread rep_thr([&replica_obj]()
                            { replica_obj.clientReplicaSubservice(); });
 
+            thread rep_thr2([&replica_obj]()
+                           { replica_obj.activeListening(); });
             int_thr.join();
             mon_thr.join();
             rep_thr.join();
-            return 0;
+            rep_thr2.join();
+
 
         }
     }

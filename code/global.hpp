@@ -44,16 +44,26 @@ using namespace std;
 #define PORTA_REPLICA 20003 //subservico Replica
 #define PORTA_REPLICA_CLIENTE 20013 //subservico Replica
 #define PORTA_EXIT 20066 // porta para saida
+#define PORTA_ELEICAO 20004 //subservico Eleicao
+#define PORTA_ELEICAO_CLIENTE 20014 //subservico Eleicao
+
+#define PORTA_NOVO_LIDER 20033 //subservico Novo Lider
 
 #define GLOBAL_BROADCAST_ADD "255.255.255.255"
 
 #define MONITORING_FREQUENCY_SEC 1  // Time between full table status checks
 //NOTE TO SELF: INTERFACE NAO TEM PORTA
 
+extern bool isRunning;
 
 extern mutex mtx, table_mtx;
 extern string MANAGER_IP_ADDRESS;
 extern string sessionMode;
+extern int self_id;
+
+extern string replica_status, monitoring_status, discovery_status, interface_status;
+
+extern bool isElectionPeriod;
 
 // Definição da estrutura do nó da lista encadeada
 struct participante {

@@ -5,7 +5,7 @@
 MonitoringSubservice::MonitoringSubservice(
     participante *&tabelaParticipantes, bool *tabelaParticipantesUpdate,
     string localHostname, string localIpAddress, string localMacAddress,
-    string localStatus, string sessionMode)
+    string localStatus)
 {
   this->tabelaParticipantes = tabelaParticipantes;
   this->tabelaEstaAtualizada = tabelaParticipantesUpdate;
@@ -13,7 +13,6 @@ MonitoringSubservice::MonitoringSubservice(
   this->localIpAddress = localIpAddress;
   this->localMacAddress = localMacAddress;
   this->localStatus = localStatus;
-  this->sessionMode = sessionMode;
 };
 MonitoringSubservice::~MonitoringSubservice(){};
 
@@ -46,6 +45,7 @@ int MonitoringSubservice::serverMonitoringSubservice()
           cerr << "ManagementSubservice>serverManagementSubservice> Error "
                   "sending packet"
                << endl;
+          monitoring_status = "off";
           return -1;
         }
 
@@ -138,6 +138,7 @@ int MonitoringSubservice::serverMonitoringSubservice()
   }
 
   cout << "return monitoring subservice" << endl;
+  monitoring_status = "off";
   return 0;
 };
 
@@ -167,7 +168,7 @@ int MonitoringSubservice::clientMonitoringSubservice()
     }
     else if (n > 0)
     {
-      if (packet_received.message == SYN && packet_received.ip_src == MANAGER_IP_ADDRESS)
+      if (packet_received.message == SYN)
       {
         int seqNum = 0;
         packet_struct packet_sent = createPacket(
@@ -187,5 +188,6 @@ int MonitoringSubservice::clientMonitoringSubservice()
     }
   }
   cout << "return monitoring subservice" << endl;
+  monitoring_status = "off";
   return 0;
 };

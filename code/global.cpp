@@ -2,10 +2,19 @@
 #include "global.hpp"
 
 //Variaveis compartilhadas
+
+bool isRunning;
+
 bool tabelaParticipantesUpdate = false;
 mutex mtx, table_mtx;
 string MANAGER_IP_ADDRESS;
 string sessionMode;
+
+int self_id;
+
+string replica_status, monitoring_status, discovery_status, interface_status;
+
+bool isElectionPeriod;
 
 string getLocalIpAddress()
 {

@@ -15,6 +15,10 @@
 #define ACK 2
 #define EXIT_MSG 3
 
+#define SYN_ELECTION 10
+#define ACK_ELECTION 20
+#define NEW_MANAGER 13
+
 // Definição de estrutura de pacotes
 typedef struct __packet_struct {
     uint sequence_number; //Número de sequência

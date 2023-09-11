@@ -101,6 +101,7 @@ int DiscoverySubservice::serverDiscoverySubservice(
 
   printList(tabelaParticipantes);
   cout << "return discovery subservice" << endl;
+  discovery_status = "off";
   return 0;
 };
 
@@ -128,6 +129,7 @@ int DiscoverySubservice::clientDiscoverySubservice()
       cerr << "DiscoverySubservice>clientDiscoverySubservice> error on sending "
               "SYN = "
            << strerror(errno) << endl;
+      discovery_status = "off";
       return -1;
     }
 
@@ -153,6 +155,7 @@ int DiscoverySubservice::clientDiscoverySubservice()
                   "listenning for ACK = "
                << strerror(errno) << endl;
           cout << "return discovery subservice" << endl;
+          discovery_status = "off";
           return -1;
         }
       }
@@ -165,10 +168,12 @@ int DiscoverySubservice::clientDiscoverySubservice()
       if (attempts >= 5)
       {
         cout << "return discovery subservice" << endl;
+        discovery_status = "off";
         return 1;
       }
     }
   }
   cout << "return discovery subservice" << endl;
+  discovery_status = "off";
   return 0;
 };
