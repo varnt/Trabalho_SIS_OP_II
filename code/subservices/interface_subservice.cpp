@@ -25,7 +25,7 @@ void InterfaceSubservice::printTable(bool &tabelaEstaAtualizada,
                                      participante *&tabelaParticipantes)
 {
   system("clear");
-  while (true)
+  while (true && this->isActive() == true)
   {
     if (tabelaEstaAtualizada == false && this->enablePrinting == true)
     {
