@@ -64,7 +64,6 @@ int main(int argc, char **argv)
         }
         else if (sessionMode == "client")
         {
-            discovery_status = "running-client";
             participante *tabelaParticipantes = nullptr; // inicio da lista
             DiscoverySubservice discovery_obj(&tabelaParticipantesUpdate, localHostName, localIpAddress, localMacAddress, localStatus);
             novoParticipante(tabelaParticipantes, localHostName, localIpAddress, localMacAddress, localStatus);

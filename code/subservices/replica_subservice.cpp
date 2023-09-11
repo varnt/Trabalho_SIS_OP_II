@@ -209,7 +209,7 @@ int ReplicaSubservice::activeListening()
 
     // JOIN THREAD BULLY
     ele_thr.join();
-
+    cout << "Closing activeListening" << endl;
     return 0;
 }
 
@@ -304,7 +304,7 @@ int ReplicaSubservice::declareNewLeader()
         currparticipante = currparticipante->next;
     }
     sessionMode = "manager";
-    cout << "New leader declaration is done";
+    cout << "New leader declaration is done" << endl;
     return 0;
     
 }
