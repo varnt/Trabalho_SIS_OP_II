@@ -103,7 +103,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
                 begin = std::chrono::steady_clock::now();
-                cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
+                //cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
 
@@ -278,6 +278,7 @@ int ReplicaSubservice::declareNewLeader()
                                             this->localMacAddress, this->localStatus, NEW_MANAGER);
         int j = 0;
         int n = 0;
+        packet_struct packet_received;
         while (n <= 0 && j < 5)
         {
             if (currparticipante->mac_address != this->localMacAddress)
@@ -288,25 +289,15 @@ int ReplicaSubservice::declareNewLeader()
                     cerr << "ReplicaSubservice>declareNewLeader> Error sending packet" << endl;
                     return -1;
                 }
-                packet_struct packet_received;
                 n = socket.listenSocket(&packet_received);
-                if (n < 0)
+                if (n <= 0)
                 {
-                    if (errno == EAGAIN || errno == EWOULDBLOCK)
-                    {
-                        j++;
-                    }
-                }
-                else if (n > 0)
-                {
-                    if (packet_received.message == ACK)
-                    {
-                        return 0;
-                    }
+                    j++;
                 }
             }
-            currparticipante = currparticipante->next;
         }
+        currparticipante = currparticipante->next;
     }
     return 0;
+    cout << "New leader declaration is done"
 }
