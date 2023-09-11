@@ -100,7 +100,7 @@ int ReplicaSubservice::clientReplicaSubservice()
         {
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
-
+                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
                  cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
@@ -219,8 +219,6 @@ int ReplicaSubservice::eleicaoBully()
     {
         if (isElectionPeriod == true)
         {
-
-            cout << "ELEIÇÃO BULLY" << endl;
             packet_struct packet_received;
             packet_struct packet = createPacket(self_id, PORTA_ELEICAO_CLIENTE, PORTA_ELEICAO,
                                                 GLOBAL_BROADCAST_ADD, this->localIpAddress, this->localHostname,
@@ -250,6 +248,7 @@ int ReplicaSubservice::eleicaoBully()
                 {
                     got_answered = true;
                     cout << "got answer" << endl;
+                    isElectionPeriod = false;
                 }
             }
             if (j > 5 && got_answered == false)
@@ -259,6 +258,7 @@ int ReplicaSubservice::eleicaoBully()
                 MANAGER_IP_ADDRESS = this->localIpAddress;
                 isElectionPeriod = false;
                 sessionMode = "manager";
+                this->declareNewLeader();
                 // TRATAR PARA ENTRAR COMO MANAGER AGORA
                 return 0;
             }
@@ -269,6 +269,8 @@ int ReplicaSubservice::eleicaoBully()
 
 int ReplicaSubservice::declareNewLeader()
 {
+
+    cout << "declaring myself as the new leader" << endl;
     participante *currparticipante = this->tabelaParticipantes;
     SocketAPI socket(PORTA_NOVO_LIDER, "eleicao");
     while (currparticipante != nullptr)
