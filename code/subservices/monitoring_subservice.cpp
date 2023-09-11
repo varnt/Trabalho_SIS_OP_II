@@ -177,6 +177,10 @@ int MonitoringSubservice::clientMonitoringSubservice()
             this->localMacAddress, this->localStatus, ACK);
         n = socket.sendPacket(&packet_sent, packet_sent.ip_dest,
                               PORTA_GERENCIA);
+
+        table_mtx.lock();
+        *tabelaEstaAtualizada = false;
+        table_mtx.unlock();
         if (n < 0)
         {
           // cerr << "MonitoringSubservice>clientMonitoringSubservice> Error "
