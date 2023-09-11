@@ -189,6 +189,10 @@ int InterfaceSubservice::updateClientScreen()
     // this->gotoxy(1, 5);
     // system("tput ed");
   }
+  if(sessionMode != "client")
+  {
+    this->setNotActive();
+  }
   printTable_thr.join();
   cout << "return interface subservice" << endl;
   interface_status = "off";
