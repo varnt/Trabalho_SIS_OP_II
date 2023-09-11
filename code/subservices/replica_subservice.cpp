@@ -105,7 +105,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
 
-                // cout << "received replica packet from ip = " << replica_packet_received.part_ip << endl;
+                 cout << "received replica packet from ip = " << replica_packet_received.part_ip << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
 
