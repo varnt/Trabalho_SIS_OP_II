@@ -232,6 +232,7 @@ int ReplicaSubservice::eleicaoBully()
             cout << "sending election packet" << endl;
             while (j <= 5 && got_answered == false)
             {
+                j++;
                 int m = socket.sendPacket(&packet, GLOBAL_BROADCAST_ADD, PORTA_ELEICAO_CLIENTE);
                 if (m < 0)
                 {
@@ -240,11 +241,7 @@ int ReplicaSubservice::eleicaoBully()
                 }
                 cout << "listening for answer" << endl;
                 int n = socket.listenSocket(&packet_received);
-                if (n <= 0)
-                {
-                    j++;
-                }
-                else if (n > 0)
+                if (n > 0)
                 {
                     got_answered = true;
                     cout << "got answer" << endl;
