@@ -85,6 +85,8 @@ int main(int argc, char **argv)
             rep_thr.join();
             rep_thr2.join();
 
+            cout << "return main" << endl;
+
             // if (sessionMode == "client")
             // {
             //     return 0;
