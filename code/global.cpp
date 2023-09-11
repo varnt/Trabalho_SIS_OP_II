@@ -243,6 +243,12 @@ void printList(participante *tabelaParticipantes)
         currparticipante = currparticipante->next;
         mtx.unlock();
     }
+    cout << endl;
+      cout << "  -  Current session mode: " << sessionMode << endl;
+      cout << "  -  Monitoring status: " << monitoring_status << endl;
+      cout << "  -  Replica status: " << replica_status << endl;
+      cout << "  -  Discovery status: " << discovery_status << endl;
+      cout << "  -  Interface status: " << interface_status << endl;
 }
 
 bool estaNaTabela(participante *&tabelaParticipantes, std::string mac_address)

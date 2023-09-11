@@ -261,6 +261,7 @@ int ReplicaSubservice::eleicaoBully()
             }
         }
     }
+    cout << "Closing eleicaoBully" << endl;
     return 0;
 }
 
@@ -270,9 +271,9 @@ int ReplicaSubservice::declareNewLeader()
     cout << "declaring myself as the new leader" << endl;
     participante *currparticipante = this->tabelaParticipantes;
     SocketAPI socket(PORTA_NOVO_LIDER, "eleicao");
+    uint seqNum = 0;
     while (currparticipante != nullptr)
     {
-        uint seqNum = 0;
         packet_struct packet = createPacket(seqNum, PORTA_ELEICAO_CLIENTE, PORTA_NOVO_LIDER,
                                             currparticipante->ip_address, this->localIpAddress, this->localHostname,
                                             this->localMacAddress, this->localStatus, NEW_MANAGER);
@@ -287,7 +288,7 @@ int ReplicaSubservice::declareNewLeader()
                 if (m < 0)
                 {
                     cerr << "ReplicaSubservice>declareNewLeader> Error sending packet" << endl;
-                    return -1;
+                    //return -1;
                 }
                 n = socket.listenSocket(&packet_received);
                 if (n <= 0)
@@ -298,6 +299,7 @@ int ReplicaSubservice::declareNewLeader()
         }
         currparticipante = currparticipante->next;
     }
-    return 0;
     cout << "New leader declaration is done";
+    return 0;
+    
 }
