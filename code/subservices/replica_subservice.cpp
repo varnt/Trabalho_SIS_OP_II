@@ -299,5 +299,5 @@ int ReplicaSubservice::declareNewLeader()
         currparticipante = currparticipante->next;
     }
     return 0;
-    cout << "New leader declaration is done"
+    cout << "New leader declaration is done";
 }
