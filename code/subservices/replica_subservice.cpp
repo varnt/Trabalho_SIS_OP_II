@@ -90,11 +90,12 @@ int ReplicaSubservice::clientReplicaSubservice()
             else
             {
                 uint64_t time_now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                if (time_now - time_since_update > 30)
+                if (time_now - time_since_update > 20)
                 {
                     isElectionPeriod = true;
+                    time_since_update = time_now;
                 }
-                time_since_update = time_now;
+                
             }
         }
         else if (n > 0)
