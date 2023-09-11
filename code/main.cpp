@@ -58,6 +58,9 @@ int main(int argc, char **argv)
             mon_thr.join();
             rep_thr.join();
 
+            cout << "return main" << endl;
+            cout << "current session mode: " << sessionMode << endl;
+
         }
         else if (sessionMode == "client")
         {
@@ -86,6 +89,7 @@ int main(int argc, char **argv)
             rep_thr2.join();
 
             cout << "return main" << endl;
+            cout << "current session mode: " << sessionMode << endl;
 
             // if (sessionMode == "client")
             // {
