@@ -76,7 +76,7 @@ int InterfaceSubservice::updateServerScreen()
                                                           this->tabelaParticipantes); // thread
                         });
 
-  while (this->isActive() == true && sessionMode == "manager")
+  while (this->isActive() == true && sessionMode != "client")
   {
 
     // set cursor to top left'
@@ -101,6 +101,7 @@ int InterfaceSubservice::updateServerScreen()
       cout << "  -  WAKEUP <hostname>- wake computer with the hostname argument" << endl;
       cout << "  -  EXIT - exit the program" << endl;
       cout << "  -  Current manager: " << MANAGER_IP_ADDRESS << endl;
+      cout << "  -  Current session mode: " << sessionMode << endl;
       cout << endl
            << "Press anything to quit help tab" << endl;
       cin.get();
@@ -121,6 +122,7 @@ int InterfaceSubservice::updateServerScreen()
     system("tput ed");
   }
   printTable_thr.join();
+  cout << "return interface subservice" << endl;
   return 0;
 };
 
@@ -138,7 +140,7 @@ int InterfaceSubservice::updateClientScreen()
                                                           this->tabelaParticipantes); // thread
                         });
 
-  while (this->isActive() == true && sessionMode == "client")
+  while (this->isActive() == true && sessionMode != "manager")
   {
     // set cursor to top left'
     string userCommand;
@@ -215,5 +217,6 @@ int InterfaceSubservice::updateClientScreen()
     system("tput ed");
   }
   printTable_thr.join();
+  cout << "return interface subservice" << endl;
   return 0;
 };

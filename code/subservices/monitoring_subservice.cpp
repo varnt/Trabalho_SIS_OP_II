@@ -24,7 +24,7 @@ void MonitoringSubservice::setNotActive() { this->currentState = false; };
 int MonitoringSubservice::serverMonitoringSubservice()
 {
   this->setActive();
-  while (this->isActive() && sessionMode == "manager")
+  while (this->isActive() && sessionMode != "client")
   {
     participante *currparticipante = this->tabelaParticipantes;
     SocketAPI socket(PORTA_GERENCIA, "server");
@@ -136,6 +136,8 @@ int MonitoringSubservice::serverMonitoringSubservice()
     *tabelaEstaAtualizada = false;
     table_mtx.unlock();
   }
+
+  cout << "return monitoring subservice" << endl;
   return 0;
 };
 
@@ -146,7 +148,7 @@ int MonitoringSubservice::clientMonitoringSubservice()
 
   int n = 0;
   this->setActive();
-  while (this->isActive() && sessionMode == "client")
+  while (this->isActive() && sessionMode != "manager")
   {
     n = socket.listenSocket(&packet_received);
     if (n < 0)
@@ -184,6 +186,6 @@ int MonitoringSubservice::clientMonitoringSubservice()
       }
     }
   }
-
+  cout << "return monitoring subservice" << endl;
   return 0;
 };

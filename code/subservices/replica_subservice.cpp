@@ -26,14 +26,14 @@ void ReplicaSubservice::setNotActive() { this->currentState = false; };
 int ReplicaSubservice::serverReplicaSubservice()
 {
     this->setActive();
-    while (this->isActive() && sessionMode == "manager")
+    while (this->isActive() && sessionMode != "client")
     {
         uint seqNum = 0;
         uint64_t replica_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         participante *currparticipante = this->tabelaParticipantes;
         SocketAPI socket(PORTA_REPLICA, "server");
         int attempts = 0;
-        while (currparticipante != nullptr)
+        while (currparticipante != nullptr )
         {
             replica_struct replica_packet = createReplicaPkt(seqNum, PORTA_REPLICA_CLIENTE, PORTA_REPLICA, this->localIpAddress, currparticipante->id, currparticipante->hostname, currparticipante->ip_address, currparticipante->mac_address, currparticipante->status, replica_timestamp, SYN);
             int m = socket.sendReplicaPacket(&replica_packet, GLOBAL_BROADCAST_ADD, PORTA_REPLICA_CLIENTE);
@@ -46,9 +46,13 @@ int ReplicaSubservice::serverReplicaSubservice()
             replica_struct ackReplicaPacket;
             int n = 0;
             n = socket.listenReplicaSocket(&ackReplicaPacket);
-            if (n < 0 && attempts >= 5) {
+            if (n <= 0 && attempts >= 5) {
                 sessionMode = "client";
+                cout << "return replica subservice" << endl;
                 return -1;
+            }
+            else if (n <= 0 && currparticipante->status == "awaken") {
+                attempts++;
             }
             else if (n > 0)
             {
@@ -57,6 +61,7 @@ int ReplicaSubservice::serverReplicaSubservice()
             }
         }
     }
+    cout << "return replica subservice" << endl;
     return 0;
 };
 
@@ -67,7 +72,7 @@ int ReplicaSubservice::clientReplicaSubservice()
 
     int n = 0;
     this->setActive();
-    while (this->isActive() && sessionMode == "client")
+    while (this->isActive() && sessionMode != "manager")
     {
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)

@@ -53,6 +53,8 @@ int main(int argc, char **argv)
             dsc_thr.join();
             mon_thr.join();
             rep_thr.join();
+
+            return 0;
         }
         else if (sessionMode == "client")
         {
@@ -68,6 +70,7 @@ int main(int argc, char **argv)
             int_thr.join();
             mon_thr.join();
             rep_thr.join();
+            return 0;
 
         }
     }

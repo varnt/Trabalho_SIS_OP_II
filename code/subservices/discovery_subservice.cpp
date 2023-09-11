@@ -3,7 +3,8 @@
 
 DiscoverySubservice::DiscoverySubservice(bool *tabelaParticipantesUpdate,
                                          string localHostname, string localIP,
-                                         string localMAC, string localStatus) {
+                                         string localMAC, string localStatus)
+{
   this->tabelaEstaAtualizada = tabelaParticipantesUpdate;
   this->socket = PORTA_DESCOBERTA;
   this->isActive = true;
@@ -20,7 +21,8 @@ void DiscoverySubservice::setActive() { this->isActive = true; };
 void DiscoverySubservice::setNotActive() { this->isActive = false; };
 
 int DiscoverySubservice::serverDiscoverySubservice(
-    participante *&tabelaParticipantes) {
+    participante *&tabelaParticipantes)
+{
 
   // create a socket to listen to the discovery port
   SocketAPI serverSocket(PORTA_DESCOBERTA, "server");
@@ -30,28 +32,37 @@ int DiscoverySubservice::serverDiscoverySubservice(
   // loop to listen to the socket waiting for SYN packets
   this->setActive();
 
-  while (this->isActive && sessionMode == "manager") {
+  while (this->isActive && sessionMode != "client")
+  {
     // passive listening to the socket
     int n = 0; // num of bytes received
-    while (n <= 0) {
+    while (n <= 0)
+    {
       n = serverSocket.listenSocket(&packet_received);
-      if (n < 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+      if (n < 0)
+      {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
           n = 0;
-        } else {
+        }
+        else
+        {
           cerr << "DiscoverySubservice>serverDiscoverySubservice> error on "
                   "listening socket"
                << endl;
           return -1;
         }
-      } else if (n > 0) {
+      }
+      else if (n > 0)
+      {
         string newHostname = packet_received.hostname;
         string newIP = packet_received.ip_src;
         string newMAC = packet_received.mac_src;
         string newStatus = packet_received.status;
         uint16_t srcPort = packet_received.src_port;
 
-        if (estaNaTabela(tabelaParticipantes, newMAC) == false) {
+        if (estaNaTabela(tabelaParticipantes, newMAC) == false)
+        {
           // include the new participant in the table
           mtx.lock();
           table_mtx.lock();
@@ -60,7 +71,9 @@ int DiscoverySubservice::serverDiscoverySubservice(
           mtx.unlock();
           *tabelaEstaAtualizada = false;
           table_mtx.unlock();
-        } else if (packet_received.message == EXIT_MSG) {
+        }
+        else if (packet_received.message == EXIT_MSG)
+        {
           mtx.lock();
           table_mtx.lock();
           excluirParticipante(tabelaParticipantes, newMAC);
@@ -76,7 +89,8 @@ int DiscoverySubservice::serverDiscoverySubservice(
             this->localHostname, this->localMAC, this->localStatus, ACK);
         n = serverSocket.sendPacket(&returnPacket, newIP, srcPort);
 
-        if (n < 0) {
+        if (n < 0)
+        {
           cerr << "DiscoverySubservice>serverDiscoverySubservice> error on "
                   "sending ACK"
                << endl;
@@ -86,10 +100,12 @@ int DiscoverySubservice::serverDiscoverySubservice(
   }
 
   printList(tabelaParticipantes);
+  cout << "return discovery subservice" << endl;
   return 0;
 };
 
-int DiscoverySubservice::clientDiscoverySubservice() {
+int DiscoverySubservice::clientDiscoverySubservice()
+{
   // create socket to broadcast
   SocketAPI clientSocket(PORTA_DESCOBERTA_CLIENTE, "client");
   uint seqNum = 0;
@@ -102,11 +118,13 @@ int DiscoverySubservice::clientDiscoverySubservice() {
   // loop to send SYN packets to the broadcast address until receive an ACK
   this->setActive();
   int attempts = 0;
-  while (this->isActive && sessionMode == "client") {
+  while (this->isActive && sessionMode != "manager")
+  {
     // send a SYN packet to the broadcast address
     int n = clientSocket.sendPacket(&synPacket, GLOBAL_BROADCAST_ADD,
                                     PORTA_DESCOBERTA);
-    if (n < 0) {
+    if (n < 0)
+    {
       cerr << "DiscoverySubservice>clientDiscoverySubservice> error on sending "
               "SYN = "
            << strerror(errno) << endl;
@@ -115,32 +133,42 @@ int DiscoverySubservice::clientDiscoverySubservice() {
 
     n = 0;
     // listen to the socket until receive an ACK or aknowledge being the first
-    while (n <= 0 ) {
+    while (n <= 0)
+    {
       // passive listening to the socket waiting for ACK packet
 
       n = clientSocket.listenSocket(&ackPacket);
-      if (n < 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+      if (n < 0)
+      {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
           n = 1;
           attempts = attempts + 1;
           cout << "DiscoverySubservice>clientDiscoverySubservice> timeout" << endl; // DEBUG
-          cout << "Attempts: " << attempts << endl; // DEBUG
-        } else {
+          cout << "Attempts: " << attempts << endl;                                 // DEBUG
+        }
+        else
+        {
           cerr << "DiscoverySubservice>clientDiscoverySubservice> error on "
                   "listenning for ACK = "
                << strerror(errno) << endl;
+          cout << "return discovery subservice" << endl;
           return -1;
         }
       }
       // behavior when receive an ACK
-      if (ackPacket.message == ACK) {
+      if (ackPacket.message == ACK)
+      {
         this->setNotActive();
         MANAGER_IP_ADDRESS = ackPacket.ip_src;
       }
-      if (attempts >= 5) {
+      if (attempts >= 5)
+      {
+        cout << "return discovery subservice" << endl;
         return 1;
       }
     }
   }
+  cout << "return discovery subservice" << endl;
   return 0;
 };
