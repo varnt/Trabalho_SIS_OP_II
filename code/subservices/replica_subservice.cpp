@@ -219,6 +219,8 @@ int ReplicaSubservice::eleicaoBully()
     {
         if (isElectionPeriod == true)
         {
+
+            cout << "ELEIÇÃO BULLY" << endl;
             packet_struct packet_received;
             packet_struct packet = createPacket(self_id, PORTA_ELEICAO_CLIENTE, PORTA_ELEICAO,
                                                 GLOBAL_BROADCAST_ADD, this->localIpAddress, this->localHostname,
@@ -227,6 +229,7 @@ int ReplicaSubservice::eleicaoBully()
             // Se ele nota que não tem manager, ou se foi informado que não tem manager, ele inicia uma eleição:
             int j = 0;
             bool got_answered = false;
+            cout << "sending election packet" << endl;
             while (j <= 5 && got_answered == true)
             {
                 int m = socket.sendPacket(&packet, GLOBAL_BROADCAST_ADD, PORTA_ELEICAO_CLIENTE);
@@ -246,10 +249,12 @@ int ReplicaSubservice::eleicaoBully()
                 else if (n > 0)
                 {
                     got_answered = true;
+                    cout << "got answer" << endl;
                 }
             }
             if (j > 5 && got_answered == false)
             {
+                cout << "got elected" << endl;
                 got_elected = true;
                 MANAGER_IP_ADDRESS = this->localIpAddress;
                 isElectionPeriod = false;
