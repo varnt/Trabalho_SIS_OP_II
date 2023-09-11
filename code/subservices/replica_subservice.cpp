@@ -75,6 +75,7 @@ int ReplicaSubservice::clientReplicaSubservice()
     SocketAPI socket(PORTA_REPLICA_CLIENTE, "client");
     replica_struct replica_packet_received;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     int n = 0;
     this->setActive();
     while (this->isActive() && sessionMode != "manager")
@@ -83,7 +84,7 @@ int ReplicaSubservice::clientReplicaSubservice()
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)
         {
-            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+            end = std::chrono::steady_clock::now();
             if (errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 n = -1;         
@@ -92,7 +93,7 @@ int ReplicaSubservice::clientReplicaSubservice()
                 {
                     cout << "SEM CONTATO DO MANAGER" << endl;
                     isElectionPeriod = true;
-                    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                    begin = std::chrono::steady_clock::now();
                 }
             }
         }
@@ -100,7 +101,7 @@ int ReplicaSubservice::clientReplicaSubservice()
         {
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
-                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                begin = std::chrono::steady_clock::now();
                  cout << "received replica packet from ip = " << replica_packet_received.ip_src << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
