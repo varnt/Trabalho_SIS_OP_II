@@ -58,7 +58,7 @@ int ReplicaSubservice::serverReplicaSubservice()
             {
                 attempts++;
             }
-            else if (n > 0)
+            else if (n > 0 && currparticipante->ip_address != this->localIpAddress)
             {
                 cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
                 attempts = 0;
