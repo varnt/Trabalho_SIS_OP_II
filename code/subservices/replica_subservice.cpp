@@ -24,13 +24,13 @@ void ReplicaSubservice::setNotActive() { this->currentState = false; };
 
 int ReplicaSubservice::serverReplicaSubservice()
 {
+    SocketAPI socket(PORTA_REPLICA, "server");
     this->setActive();
     while (this->isActive() && sessionMode != "client")
     {
         uint seqNum = 0;
         uint64_t replica_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         participante *currparticipante = this->tabelaParticipantes;
-        SocketAPI socket(PORTA_REPLICA, "server");
         int attempts = 0;
         while (currparticipante != nullptr)
         {
@@ -60,7 +60,6 @@ int ReplicaSubservice::serverReplicaSubservice()
             }
             else if (n > 0 && currparticipante->ip_address != this->localIpAddress)
             {
-                cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
                 attempts = 0;
                 // cout << "received replica packet from ip = " << ackReplicaPacket.part_ip << endl;
             }
@@ -75,12 +74,12 @@ int ReplicaSubservice::clientReplicaSubservice()
 {
     SocketAPI socket(PORTA_REPLICA_CLIENTE, "client");
     replica_struct replica_packet_received;
-    uint64_t time_since_update = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     int n = 0;
     this->setActive();
     while (this->isActive() && sessionMode != "manager")
     {
-        
+
         n = socket.listenReplicaSocket(&replica_packet_received);
         if (n < 0)
         {
@@ -90,14 +89,15 @@ int ReplicaSubservice::clientReplicaSubservice()
             }
             else
             {
-                uint64_t time_now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                if (time_now - time_since_update > 20)
+                
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                cout << "time since last replica received = " << chrono::duration_cast<std::chrono::seconds> (end - begin).count() << endl;
+                if (chrono::duration_cast<std::chrono::seconds> (end - begin).count() > 20)
                 {
                     cout << "SEM CONTATO DO MANAGER" << endl;
                     isElectionPeriod = true;
-                    time_since_update = time_now;
+                    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
                 }
-                
             }
         }
         else if (n > 0)
@@ -105,7 +105,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
 
-                //cout << "received replica packet from ip = " << replica_packet_received.part_ip << endl;
+                // cout << "received replica packet from ip = " << replica_packet_received.part_ip << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
 
@@ -122,7 +122,7 @@ int ReplicaSubservice::clientReplicaSubservice()
                 }
                 for (int x = 0; x < 3; x++)
                 {
-                   int m = socket.sendReplicaPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
+                    int m = socket.sendReplicaPacket(&replica_packet_received, replica_packet_received.ip_src, PORTA_REPLICA);
                     if (m < 0)
                     {
                         cerr << "ReplicaSubservice>eleicaoBully> Error sending packet" << endl;
