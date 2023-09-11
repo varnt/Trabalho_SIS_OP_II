@@ -92,6 +92,7 @@ int ReplicaSubservice::clientReplicaSubservice()
                 uint64_t time_now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 if (time_now - time_since_update > 20)
                 {
+                    cout << "SEM CONTATO DO MANAGER" << endl;
                     isElectionPeriod = true;
                     time_since_update = time_now;
                 }
@@ -103,6 +104,7 @@ int ReplicaSubservice::clientReplicaSubservice()
             if (replica_packet_received.message == SYN && replica_packet_received.ip_src == MANAGER_IP_ADDRESS)
             {
 
+                cout << "received replica packet from ip = " << replica_packet_received.part_ip << endl;
                 if (estaNaTabela(this->tabelaParticipantes, replica_packet_received.part_mac) == true)
                 {
 
@@ -208,6 +210,7 @@ int ReplicaSubservice::activeListening()
 
     // JOIN THREAD BULLY
     ele_thr.join();
+
     return 0;
 }
 
