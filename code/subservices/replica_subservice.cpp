@@ -52,6 +52,7 @@ int ReplicaSubservice::serverReplicaSubservice()
                 cout << "não recebeu contato dos participantes" << std::endl;
                 sessionMode = "client";
                 replica_status = "off";
+                sessionMode = "manager";
                 return -1;
             }
             else if (n < 0 && currparticipante->status == "awaken")
@@ -67,6 +68,7 @@ int ReplicaSubservice::serverReplicaSubservice()
         }
     }
     replica_status = "off";
+    sessionMode = "manager";
     return 0;
 };
 
