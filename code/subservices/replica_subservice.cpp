@@ -112,7 +112,7 @@ int ReplicaSubservice::clientReplicaSubservice()
                 else
                 {
 
-                    novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.ip_src, replica_packet_received.part_mac, replica_packet_received.part_status);
+                    novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.part_id, replica_packet_received.part_mac, replica_packet_received.part_status);
                 }
                 if (replica_packet_received.part_mac == this->localMacAddress)
                 {
@@ -164,7 +164,10 @@ int ReplicaSubservice::activeListening()
                     cerr << "DiscoverySubservice>serverDiscoverySubservice> error on "
                             "listening socket"
                          << endl;
-                    return -1;
+                         if(sessionMode=="manager"){
+                            return -1;
+                         }
+                    
                 }
             }
             else if (n > 0)
@@ -241,7 +244,7 @@ int ReplicaSubservice::eleicaoBully()
                 }
                 cout << "listening for answer" << endl;
                 int n = socket.listenSocket(&packet_received);
-                if (n > 0)
+                if (n > 0 && packet_received.sequence_number < self_id)
                 {
                     got_answered = true;
                     cout << "got answer" << endl;
