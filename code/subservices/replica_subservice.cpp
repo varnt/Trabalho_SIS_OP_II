@@ -112,7 +112,7 @@ int ReplicaSubservice::clientReplicaSubservice()
                 else
                 {
 
-                    novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.part_id, replica_packet_received.part_mac, replica_packet_received.part_status);
+                    novoParticipanteID(this->tabelaParticipantes, replica_packet_received.part_id, replica_packet_received.part_hostname, replica_packet_received.part_ip, replica_packet_received.part_mac, replica_packet_received.part_status);
                 }
                 if (replica_packet_received.part_mac == this->localMacAddress)
                 {
